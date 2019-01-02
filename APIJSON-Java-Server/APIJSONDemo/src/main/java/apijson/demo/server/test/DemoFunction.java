@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.*/
 
-package apijson.demo.server;
+package apijson.demo.server.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +21,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import apijson.demo.server.common.StandardParser;
+import apijson.demo.server.common.StandardVerifier;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -102,7 +104,7 @@ public class DemoFunction extends RemoteFunction {
 		request.putAll(functionItem.toArray(0, 0, "Function"));
 		//Function[]>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-		JSONObject response = new DemoParser(RequestMethod.GET, true).parseResponse(request);
+		JSONObject response = new StandardParser(RequestMethod.GET, true).parseResponse(request);
 		if (JSONResponse.isSuccess(response) == false) {
 			Log.e(TAG, "\n\n\n\n\n !!!! 查询远程函数异常 !!!\n" + response.getString(JSONResponse.KEY_MSG) + "\n\n\n\n\n");
 			return;
@@ -130,7 +132,7 @@ public class DemoFunction extends RemoteFunction {
 			}
 			demo.put(JSONRequest.KEY_COLUMN, "id,name,arguments,demo");
 
-			JSONObject r = new DemoParser(RequestMethod.GET, true).parseResponse(demo);
+			JSONObject r = new StandardParser(RequestMethod.GET, true).parseResponse(demo);
 			if (JSONResponse.isSuccess(r) == false) {
 				//				throw new UnsupportedOperationException("远程函数测试未通过！请修改 Function 表里的 demo！原因：" + JSONResponse.getMsg(r));
 				exitWithError(JSONResponse.getMsg(r));
@@ -224,7 +226,7 @@ public class DemoFunction extends RemoteFunction {
 		request.put("Comment", comment);
 		//Comment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-		JSONObject rp = new DemoParser(RequestMethod.DELETE).setNoVerify(true).parseResponse(request);
+		JSONObject rp = new StandardParser(RequestMethod.DELETE).setNoVerify(true).parseResponse(request);
 
 		JSONObject c = rp.getJSONObject("Comment");
 		return c == null ? 0 : c.getIntValue(JSONResponse.KEY_COUNT);
@@ -257,7 +259,7 @@ public class DemoFunction extends RemoteFunction {
 		request.put("Comment", comment);
 		//Comment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-		JSONObject rp = new DemoParser(RequestMethod.DELETE).setNoVerify(true).parseResponse(request);
+		JSONObject rp = new StandardParser(RequestMethod.DELETE).setNoVerify(true).parseResponse(request);
 
 		JSONObject c = rp.getJSONObject("Comment");
 		return c == null ? 0 : c.getIntValue(JSONResponse.KEY_COUNT);
@@ -283,7 +285,7 @@ public class DemoFunction extends RemoteFunction {
 		request.putAll(idItem.toArray(0, 0, "Comment-id"));
 		//Comment-id[]>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-		JSONObject rp = new DemoParser().setNoVerify(true).parseResponse(request);
+		JSONObject rp = new StandardParser().setNoVerify(true).parseResponse(request);
 
 		JSONArray a = rp.getJSONArray("Comment-id[]");
 		if (a != null) {
@@ -352,7 +354,7 @@ public class DemoFunction extends RemoteFunction {
 	public Object verifyAccess(@NotNull JSONObject request) throws Exception {
 		long userId = request.getLongValue(zuo.biao.apijson.JSONObject.KEY_USER_ID);
 		RequestRole role = RequestRole.get(request.getString(zuo.biao.apijson.JSONObject.KEY_ROLE));
-		if (role == RequestRole.OWNER && userId != DemoVerifier.getVisitorId(session)) {
+		if (role == RequestRole.OWNER && userId != StandardVerifier.getVisitorId(session)) {
 			throw new IllegalAccessException("登录用户与角色OWNER不匹配！");
 		}
 		return null;

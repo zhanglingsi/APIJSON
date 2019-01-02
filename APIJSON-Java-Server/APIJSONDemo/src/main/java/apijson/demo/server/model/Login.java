@@ -22,41 +22,52 @@ import static zuo.biao.apijson.RequestRole.UNKNOWN;
 
 import zuo.biao.apijson.MethodAccess;
 
-/**登录日志
+/**
+ * 登录日志
+ *
  * @author Lemon
  */
 @SuppressWarnings("serial")
 @MethodAccess(
-		GET = {},
-		HEAD = {},
-		GETS = {UNKNOWN, LOGIN, CONTACT, OWNER, ADMIN},
-		HEADS = {UNKNOWN, LOGIN, CONTACT, OWNER, ADMIN},
-		POST = {ADMIN},
-		PUT = {ADMIN},
-		DELETE = {ADMIN}
-		)
+        GET = {},
+        HEAD = {},
+        GETS = {UNKNOWN, LOGIN, CONTACT, OWNER, ADMIN},
+        HEADS = {UNKNOWN, LOGIN, CONTACT, OWNER, ADMIN},
+        POST = {ADMIN},
+        PUT = {ADMIN},
+        DELETE = {ADMIN}
+)
 public class Login extends BaseModel {
 
-	public static final int TYPE_PASSWORD = 0;//密码登录
-	public static final int TYPE_VERIFY = 1;//验证码登录
-	
-	private Integer type;
+    /**
+     * 密码登录
+     */
+    public static final int TYPE_PASSWORD = 0;
 
-	public Login() {
-		super();
-	}
-	public Login(long userId) {
-		this();
-		setUserId(userId);
-	}
+    /**
+     * 验证码登录
+     */
+    public static final int TYPE_VERIFY = 1;
 
-	
-	public Integer getType() {
-		return type;
-	}
-	public Login setType(Integer type) {
-		this.type = type;
-		return this;
-	}
+    private Integer type;
+
+    public Login() {
+        super();
+    }
+
+    public Login(long userId) {
+        this();
+        setUserId(userId);
+    }
+
+
+    public Integer getType() {
+        return type;
+    }
+
+    public Login setType(Integer type) {
+        this.type = type;
+        return this;
+    }
 
 }
