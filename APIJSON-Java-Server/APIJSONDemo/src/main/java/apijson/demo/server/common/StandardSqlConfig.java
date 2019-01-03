@@ -1,6 +1,7 @@
 package apijson.demo.server.common;
 
 import apijson.demo.server.model.Privacy;
+import apijson.demo.server.model.Product;
 import apijson.demo.server.model.User;
 import com.alibaba.fastjson.JSONObject;
 import zuo.biao.apijson.RequestMethod;
@@ -22,6 +23,7 @@ public class StandardSqlConfig extends AbstractSQLConfig {
     static {
         TABLE_KEY_MAP.put(User.class.getSimpleName(), "apijson_user");
         TABLE_KEY_MAP.put(Privacy.class.getSimpleName(), "apijson_privacy");
+        TABLE_KEY_MAP.put(Product.class.getSimpleName(), "tb_product");
     }
 
     @Override

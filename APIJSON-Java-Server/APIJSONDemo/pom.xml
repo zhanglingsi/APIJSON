@@ -53,14 +53,6 @@
 
         <dependency>
             <groupId>com.apijson</groupId>
-            <artifactId>apijson</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/apijson-server3.2.5.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>com.apijson</groupId>
             <artifactId>postgresql</artifactId>
             <version>1.0</version>
             <scope>system</scope>
@@ -71,6 +63,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
         </dependency>
 
     </dependencies>

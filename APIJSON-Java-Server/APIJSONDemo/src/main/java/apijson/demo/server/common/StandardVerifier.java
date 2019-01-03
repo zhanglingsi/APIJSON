@@ -25,6 +25,7 @@ public class StandardVerifier extends AbstractVerifier<Long> {
         ACCESS_MAP.put(Comment.class.getSimpleName(), getAccessMap(Comment.class.getAnnotation(MethodAccess.class)));
         ACCESS_MAP.put(Verify.class.getSimpleName(), getAccessMap(Verify.class.getAnnotation(MethodAccess.class)));
         ACCESS_MAP.put(Login.class.getSimpleName(), getAccessMap(Login.class.getAnnotation(MethodAccess.class)));
+        ACCESS_MAP.put(Product.class.getSimpleName(), getAccessMap(Product.class.getAnnotation(MethodAccess.class)));
     }
 
 
