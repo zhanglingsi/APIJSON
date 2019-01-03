@@ -65,7 +65,7 @@ public class StandardSqlExecutor extends AbstractSQLExecutor {
             if (StandardSqlConfig.DATABASE_POSTGRESQL.equalsIgnoreCase(config.getDatabase())) {
                 connection = DriverManager.getConnection(config.getDBUri(), config.getDBAccount(), config.getDBPassword());
             } else {
-                connection = DriverManager.getConnection(config.getDBUri() + "?useUnicode=true&characterEncoding=UTF-8&user="
+                connection = DriverManager.getConnection(config.getDBUri() + "?useUnicode=true&useSSL=false&characterEncoding=UTF-8&user="
                         + config.getDBAccount() + "&password=" + config.getDBPassword());
             }
             connectionMap.put(config.getDatabase(), connection);

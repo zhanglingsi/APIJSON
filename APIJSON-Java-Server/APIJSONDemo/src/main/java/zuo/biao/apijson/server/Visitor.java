@@ -16,13 +16,15 @@ package zuo.biao.apijson.server;
 
 import java.util.List;
 
-/**来访者
+/**
+ * 来访者
+ *
  * @author Lemon
  */
 public interface Visitor<T> {
 
-	T getId();
+    T getId();
 
-	List<T> getContactIdList();
+    List<T> getContactIdList();
 
 }

@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import zuo.biao.apijson.JSONResponse;
 import zuo.biao.apijson.Log;
 import zuo.biao.apijson.NotNull;
@@ -37,15 +38,9 @@ import zuo.biao.apijson.StringUtil;
 /**executor for query(read) or update(write) MySQL database
  * @author Lemon
  */
+@Slf4j
 public abstract class AbstractSQLExecutor implements SQLExecutor {
 	private static final String TAG = "SQLExecutor";
-
-
-	//访问一次后丢失，可能因为static导致内存共享，别的地方改变了内部对象的值
-	//	private static final Map<String, Map<Integer, JSONObject>> staticCacheMap;
-	//	static {
-	//		staticCacheMap = new HashMap<String, Map<Integer, JSONObject>>();
-	//	}
 
 	/**
 	 * 缓存map
@@ -60,15 +55,11 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
 	 */
 	@Override
 	public synchronized void putCache(String sql, Map<Integer, JSONObject> map, boolean isStatic) {
-		if (sql == null || map == null) { //空map有效，说明查询过sql了  || map.isEmpty()) {
+		if (sql == null || map == null) {
 			Log.i(TAG, "saveList  sql == null || map == null >> return;");
 			return;
 		}
-		//		if (isStatic) {
-		//			staticCacheMap.put(sql, map);
-		//		} else {
 		cacheMap.put(sql, map);
-		//		}
 	}
 	/**移除缓存
 	 * @param sql
@@ -80,11 +71,8 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
 			Log.i(TAG, "removeList  sql == null >> return;");
 			return;
 		}
-		//		if (isStatic) {
-		//			staticCacheMap.remove(sql);
-		//		} else {
+
 		cacheMap.remove(sql);
-		//		}
 	}
 
 	/**获取缓存
@@ -119,8 +107,10 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
 	 */
 	@Override
 	public JSONObject execute(SQLConfig config) throws Exception {
+		log.info("{} select  config==null >> return null;", TAG);
 		if (config == null) {
 			Log.e(TAG, "select  config==null >> return null;");
+			log.info("{} select  config==null >> return null;", TAG);
 			return null;
 		}
 		boolean prepared = config.isPrepared();

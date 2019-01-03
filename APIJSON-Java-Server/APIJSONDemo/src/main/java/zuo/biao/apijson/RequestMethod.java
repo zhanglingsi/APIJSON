@@ -99,7 +99,7 @@ public enum RequestMethod {
      * @param method
      * @return
      */
-    public static boolean isPublicMethod(RequestMethod method) {
+    public static Boolean isPublicMethod(RequestMethod method) {
         return method == null || method == GET || method == HEAD;
     }
 
