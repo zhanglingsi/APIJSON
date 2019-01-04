@@ -284,6 +284,7 @@ public class JSONResponse extends zuo.biao.apijson.JSONObject {
      * @param clazz
      * @return
      */
+    @Override
     public <T> T getObject(String key, Class<T> clazz) {
         return getObject(this, key, clazz);
     }

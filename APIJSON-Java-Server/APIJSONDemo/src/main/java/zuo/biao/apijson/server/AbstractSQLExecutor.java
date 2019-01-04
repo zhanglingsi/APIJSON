@@ -60,7 +60,6 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
     @Override
     public synchronized void putCache(String sql, Map<Integer, JSONObject> map, boolean isStatic) {
         if (sql == null || map == null) {
-            Log.i(TAG, "saveList  sql == null || map == null >> return;");
             return;
         }
         cacheMap.put(sql, map);
@@ -75,7 +74,6 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
     @Override
     public synchronized void removeCache(String sql, boolean isStatic) {
         if (sql == null) {
-            Log.i(TAG, "removeList  sql == null >> return;");
             return;
         }
 
@@ -137,9 +135,8 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
         JSONObject result = null;
 
         long startTime = System.currentTimeMillis();
-
+        log.info("☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀");
         log.info("【执行SQL语句开始时间】：{}", startTime);
-        log.info("【SQL语句为】：{}", sql);
 
         ResultSet rs = null;
         switch (config.getMethod()) {
@@ -147,8 +144,7 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
             case HEADS:
                 rs = executeQuery(config);
 
-                result = rs.next() ? AbstractParser.newSuccessResult()
-                        : AbstractParser.newErrorResult(new SQLException("数据库错误, rs.next() 失败！"));
+                result = rs.next() ? AbstractParser.newSuccessResult() : AbstractParser.newErrorResult(new SQLException("数据库错误, rs.next() 失败！"));
                 result.put(JSONResponse.KEY_COUNT, rs.getLong(1));
 
                 rs.close();
@@ -207,8 +203,6 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
         int viceColumnStart = length + 1;
         while (rs.next()) {
             index++;
-            Log.d(TAG, "\n\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n select while (rs.next()){  index = " + index + "\n\n");
-
             result = new JSONObject(true);
 
             for (int i = 1; i <= length; i++) {
@@ -221,9 +215,6 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
             }
 
             resultMap = onPutTable(config, rs, rsmd, resultMap, index, result);
-
-            Log.d(TAG, "\n select  while (rs.next()) { resultMap.put( " + index + ", result); "
-                    + "\n >>>>>>>>>>>>>>>>>>>>>>>>>>> \n\n");
         }
 
         rs.close();
@@ -241,18 +232,18 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
 
         //<sql, Table>
         for (Entry<String, JSONObject> entry : set) {
-            Map<Integer, JSONObject> m = new HashMap<Integer, JSONObject>();
+            Map<Integer, JSONObject> m = Maps.newHashMap();
             m.put(0, entry.getValue());
             putCache(entry.getKey(), m, false);
         }
 
 
         putCache(sql, resultMap, config.isCacheStatic());
-        Log.i(TAG, ">>> select  putCache('" + sql + "', resultMap);  resultMap.size() = " + resultMap.size());
 
         long endTime = System.currentTimeMillis();
-        Log.d(TAG, "\n\n select  endTime = " + endTime + "; duration = " + (endTime - startTime)
-                + "\n return resultMap.get(" + position + ");" + "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n");
+        log.info("【执行SQL语句结束时间】：{}", endTime);
+        log.info("【执行SQL语句耗时】：{}", endTime - startTime);
+        log.info("☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀☀");
         return resultMap.get(position);
     }
 
@@ -380,8 +371,6 @@ public abstract class AbstractSQLExecutor implements SQLExecutor {
             , final int tablePosition, @NotNull JSONObject table, final int columnIndex, Map<String, JSONObject> childMap) throws Exception {
 
         if (rsmd.getColumnName(columnIndex).startsWith("_")) {
-            Log.i(TAG, "select while (rs.next()){ ..."
-                    + " >>  rsmd.getColumnName(i).startsWith(_) >> continue;");
             return table;
         }
 

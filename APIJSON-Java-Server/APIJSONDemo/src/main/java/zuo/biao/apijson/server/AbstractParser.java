@@ -282,12 +282,12 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
     @Override
     public JSONObject parseResponse(JSONObject request) {
         long startTime = System.currentTimeMillis();
+        log.info("=========================================================================================================");
         log.info("【开始处理已经转化的JSONObject对象，开始时间为】：{}", startTime);
 
         requestObject = request;
 
         verifier = createVerifier().setVisitor(getVisitor());
-        log.info("【初始化访问权限：】{}", verifier);
 
         if (RequestMethod.isPublicMethod(requestMethod).equals(Boolean.FALSE)) {
             try {
@@ -350,7 +350,7 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 
         log.info("【处理已经转化的JSONObject对象，结束时间为】：{}", endTime);
         log.info("【处理花费时间为】：{}", (endTime - startTime));
-
+        log.info("=========================================================================================================");
         return globalFormat && JSONResponse.isSuccess(requestObject) ? new JSONResponse(requestObject) : requestObject;
     }
 
@@ -602,7 +602,7 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
     public JSONObject onObjectParse(final JSONObject request
             , String parentPath, String name, final SQLConfig arrayConfig) throws Exception {
 
-        log.info("【request】：{}，【parentPath】：{}， 【name】：{}，【arrayConfig】：{}", request, parentPath, name, arrayConfig);
+        log.info("【parentPath】：{}， 【name】：{}，【arrayConfig】：{}", parentPath, name, arrayConfig);
 
         if (request == null) {
             return null;
@@ -995,7 +995,6 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
      * @return
      */
     public static String getAbsPath(String path, String name) {
-        Log.i(TAG, "getPath  path = " + path + "; name = " + name + " <<<<<<<<<<<<<");
         path = StringUtil.getString(path);
         name = StringUtil.getString(name);
         if (StringUtil.isNotEmpty(path, false)) {
@@ -1008,7 +1007,7 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
         if (path.startsWith("/")) {
             path = path.substring(1);
         }
-        Log.i(TAG, "getPath  return " + path + " >>>>>>>>>>>>>>>>");
+
         return path;
     }
 
@@ -1056,11 +1055,7 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
      */
     @Override
     public synchronized void putQueryResult(String path, Object result) {
-        Log.i(TAG, "\n putQueryResult  valuePath = " + path + "; result = " + result + "\n <<<<<<<<<<<<<<<<<<<<<<<");
-        //		if (queryResultMap.containsKey(valuePath)) {//只保存被关联的value
-        Log.d(TAG, "putQueryResult  queryResultMap.containsKey(valuePath) >> queryResultMap.put(path, result);");
         queryResultMap.put(path, result);
-        //		}
     }
 
     /**
@@ -1071,9 +1066,7 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
      */
     @Override
     public Object getValueByPath(String valuePath) {
-        Log.i(TAG, "<<<<<<<<<<<<<<< \n getValueByPath  valuePath = " + valuePath + "\n <<<<<<<<<<<<<<<<<<");
         if (StringUtil.isEmpty(valuePath, true)) {
-            Log.e(TAG, "getValueByPath  StringUtil.isNotEmpty(valuePath, true) == false >> return null;");
             return null;
         }
         Object target = queryResultMap.get(valuePath);
@@ -1090,8 +1083,6 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
                 try {
                     parent = (JSONObject) queryResultMap.get(path);
                 } catch (Exception e) {
-                    Log.e(TAG, "getValueByPath  try { parent = (JSONObject) queryResultMap.get(path); } catch { "
-                            + "\n parent not instanceof JSONObject!");
                     parent = null;
                 }
                 if (parent != null) {
@@ -1103,8 +1094,10 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 
         //逐层到达targetKey的直接容器JSONObject parent
         if (keys != null && keys.length > 1) {
-            for (int i = 0; i < keys.length - 1; i++) {//一步一步到达指定位置parentPath
-                if (parent == null) {//不存在或路径错误(中间的key对应value不是JSONObject)
+            //一步一步到达指定位置parentPath
+            for (int i = 0; i < keys.length - 1; i++) {
+                //不存在或路径错误(中间的key对应value不是JSONObject)
+                if (parent == null) {
                     break;
                 }
                 parent = getJSONObject(parent, keys[i]);
@@ -1112,10 +1105,9 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
         }
 
         if (parent != null) {
-            Log.i(TAG, "getValueByPath >> get from queryResultMap >> return  parent.get(keys[keys.length - 1]);");
-            target = parent.get(keys[keys.length - 1]); //值为null应该报错NotExistExeption，一般都是id关联，不可为null，否则可能绕过安全机制
+            //值为null应该报错NotExistExeption，一般都是id关联，不可为null，否则可能绕过安全机制
+            target = parent.get(keys[keys.length - 1]);
             if (target != null) {
-                Log.i(TAG, "getValueByPath >> getValue >> return target = " + target);
                 return target;
             }
         }

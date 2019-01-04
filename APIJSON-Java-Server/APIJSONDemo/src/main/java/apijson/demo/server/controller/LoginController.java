@@ -22,6 +22,21 @@ import static zuo.biao.apijson.RequestMethod.GETS;
 import static zuo.biao.apijson.RequestMethod.HEADS;
 
 /**
+ * Controller层的职责
+ * 1. 验证收到的请求  异常：返回异常结果，和异常码， 必须的请求参数是否为空，格式是否正确，解析是否正常等
+ * 2. 校验请求正常（表示该请求可以被处理）：发送给Service层调用 并返回结果
+ * 3. 返回结果处理（将用户信息添加到session，操作cookie等）
+ *
+ * service层的职责
+ * 1. 业务逻辑校验  注册时 输入的两次密码不一致  登陆时用户名不存在 等业务逻辑校验
+ * 2. 处理业务，包括事物原子性等 调用DAO层 访问数据库  并缓存查询结果  key：sql语句  value：ResultSet
+ * 3. 封装返回结果
+ *
+ * DAO层的职责
+ * 1. 查询参数校验，查询对象非空校验，插入表数据的唯一校验，以及非空校验等
+ * 2. 访问数据库，从数据源连接池获取Connection对象，并创建PreparedStatement，设置sql语句，并设置所需参数。
+ * 3. 执行SQL，并对返回的ResultSet进行转换，封装成对象，返回给service层
+ *
  * 登陆
  * Created by zhangls on 2019/1/2.
  * @author zhangls
@@ -32,8 +47,19 @@ public class LoginController {
     /**
      * 用户登录
      *
-     * @param request 只用String，避免encode后未decode
      * @return
+     *  ##查询手机号是否存在  head方法
+     *  SELECT  COUNT(*)  AS COUNT  FROM `apijson`.`apijson_privacy` WHERE  (  (`phone`='13000082001')  )  LIMIT 1 OFFSET 0;
+     *
+     *  ##根据手机号码查询用户隐私表信息，从中获取用户ID
+     *  SELECT * FROM `apijson`.`apijson_privacy` WHERE  (  (`phone`='13000082001')  )  LIMIT 1 OFFSET 0;
+     *
+     *  ##查询用户表中信息  验证用户名密码正确性  是否可以登录
+     *  SELECT  COUNT(*)  AS COUNT  FROM `apijson`.`apijson_privacy` WHERE  (  (`id`='82001') AND (`_password`='123456')  )  LIMIT 1 OFFSET 0;
+     *
+     *  ##根据用户ID查询用户基本信息 并返回  setSession
+     *  SELECT * FROM `apijson`.`apijson_user` WHERE  (  (`id`='82001')  )  LIMIT 1 OFFSET 0;
+     *
      * @see <pre>
      * {
      * "type": 0,  //登录方式，非必须  0-密码 1-验证码
@@ -56,6 +82,7 @@ public class LoginController {
             requestObject = StandardParser.parseRequest(request);
 
             isPassword = requestObject.getIntValue(UtilConstants.Login.TYPE) == UtilConstants.Login.LOGIN_TYPE_PASSWORD;
+
             phone = requestObject.getString(UtilConstants.Login.PHONE);
             password = requestObject.getString(UtilConstants.Login.PASS_WORD);
 
@@ -86,16 +113,20 @@ public class LoginController {
 
 
         //手机号是否已注册
+        //SELECT  COUNT(*)  AS COUNT  FROM `apijson`.`apijson_privacy` WHERE  (  (`phone`='13000082001')  )  LIMIT 1 OFFSET 0
         JSONObject phoneResponse = new StandardParser(HEADS, true).parseResponse(
                 new JSONRequest(
                         new Privacy().setPhone(phone)
                 )
         );
-        if (JSONResponse.isSuccess(phoneResponse) == false) {
+
+        if (!JSONResponse.isSuccess(phoneResponse)) {
             return StandardParser.newResult(phoneResponse.getIntValue(JSONResponse.KEY_CODE), phoneResponse.getString(JSONResponse.KEY_MSG));
         }
+
         JSONResponse response = new JSONResponse(phoneResponse).getJSONResponse(UtilConstants.Public.PRIVACY_);
-        if (JSONResponse.isExist(response) == false) {
+
+        if (!JSONResponse.isExist(response)) {
             return StandardParser.newErrorResult(new NotExistException("手机号未注册"));
         }
 
@@ -123,9 +154,11 @@ public class LoginController {
         } else {//verify手机验证码登录
             response = new JSONResponse(ControllerUtils.headVerify(Verify.TYPE_LOGIN, phone, password));
         }
-        if (JSONResponse.isSuccess(response) == false) {
+
+        if (!JSONResponse.isSuccess(response)) {
             return response;
         }
+
         response = response.getJSONResponse(isPassword ? UtilConstants.Public.PRIVACY_ : UtilConstants.Public.VERIFY_);
         if (JSONResponse.isExist(response) == false) {
             return StandardParser.newErrorResult(new ConditionErrorException("账号或密码错误"));
@@ -136,10 +169,12 @@ public class LoginController {
                         new JSONRequest(new User(userId)).setFormat(true)
                 )
         );
+
         User user = response.getObject(User.class);
         if (user == null || BaseModel.value(user.getId()) != userId) {
             return StandardParser.newErrorResult(new NullPointerException("服务器内部错误"));
         }
+
 
         //登录状态保存至session
         //用户id

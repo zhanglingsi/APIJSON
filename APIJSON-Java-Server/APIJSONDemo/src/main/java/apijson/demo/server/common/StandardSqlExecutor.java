@@ -1,5 +1,7 @@
 package apijson.demo.server.common;
 
+import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import zuo.biao.apijson.Log;
 import zuo.biao.apijson.server.AbstractSQLExecutor;
 import zuo.biao.apijson.server.SQLConfig;
@@ -13,9 +15,10 @@ import java.util.Map;
 
 /**
  * Created by zhangls on 2019/1/2.
+ *
  * @author zhangls
  */
-
+@Slf4j
 public class StandardSqlExecutor extends AbstractSQLExecutor {
     private static final String TAG = "DemoSQLExecutor";
 
@@ -23,15 +26,17 @@ public class StandardSqlExecutor extends AbstractSQLExecutor {
     static {
         try { //加载驱动程序
             Class.forName("com.mysql.jdbc.Driver");
-            Log.d(TAG, "成功加载 MySQL 驱动！");
+            log.info("【成功加载 MySQL 驱动！】");
         } catch (ClassNotFoundException e) {
+            log.info("【严重ERROR】【加载 MySQL 驱动失败！】");
             e.printStackTrace();
         }
 
         try { //加载驱动程序
             Class.forName("org.postgresql.Driver");
-            Log.d(TAG, "成功加载 PostgresSQL 驱动！");
+            log.info("【成功加载 PostgresSQL 驱动！】");
         } catch (ClassNotFoundException e) {
+            log.info("【严重ERROR】【加载 PostgresSQL 驱动失败！】");
             e.printStackTrace();
         }
     }
@@ -49,7 +54,7 @@ public class StandardSqlExecutor extends AbstractSQLExecutor {
 
 
     //TODO String 改为 enum Database 解决大小写不一致(MySQL, mysql等)导致创建多余的 Connection
-    private Map<String, Connection> connectionMap = new HashMap<>();
+    private Map<String, Connection> connectionMap = Maps.newHashMap();
 
     /**
      * @param config
@@ -59,8 +64,9 @@ public class StandardSqlExecutor extends AbstractSQLExecutor {
     @SuppressWarnings("resource")
     private PreparedStatement getStatement(@NotNull SQLConfig config) throws Exception {
         Connection connection = connectionMap.get(config.getDatabase());
+
         if (connection == null || connection.isClosed()) {
-            Log.i(TAG, "select  connection " + (connection == null ? " = null" : ("isClosed = " + connection.isClosed())));
+            log.info("【获取数据库链接Connection对象为空或者已经被关闭！】");
 
             if (StandardSqlConfig.DATABASE_POSTGRESQL.equalsIgnoreCase(config.getDatabase())) {
                 connection = DriverManager.getConnection(config.getDBUri(), config.getDBAccount(), config.getDBPassword());
@@ -71,21 +77,33 @@ public class StandardSqlExecutor extends AbstractSQLExecutor {
             connectionMap.put(config.getDatabase(), connection);
         }
 
-        PreparedStatement statement = connection.prepareStatement(config.getSQL(config.isPrepared()));
-        List<Object> valueList = config.isPrepared() ? config.getPreparedValueList() : null;
+        PreparedStatement statement = null;
 
-        if (valueList != null && valueList.isEmpty() == false) {
+        try {
+            String sql = config.getSQL(config.isPrepared());
+            log.info("【★★★重要日志★★★】【执行SQL为：】：{}", sql);
 
-            for (int i = 0; i < valueList.size(); i++) {
+            statement = connection.prepareStatement(sql);
 
-                if (StandardSqlConfig.DATABASE_POSTGRESQL.equalsIgnoreCase(config.getDatabase())) {
-                    statement.setObject(i + 1, valueList.get(i));
-                } else {
-                    statement.setString(i + 1, "" + valueList.get(i));
+            List<Object> valueList = config.isPrepared() ? config.getPreparedValueList() : null;
+
+            if (valueList != null && !valueList.isEmpty()) {
+
+                for (int i = 0; i < valueList.size(); i++) {
+
+                    if (StandardSqlConfig.DATABASE_POSTGRESQL.equalsIgnoreCase(config.getDatabase())) {
+                        statement.setObject(i + 1, valueList.get(i));
+                    } else {
+                        String val = String.valueOf(valueList.get(i));
+                        log.info("【重要日志】【执行SQL第 {} 个参数为：】：{}", i + 1, val);
+                        statement.setString(i + 1, val);
+                    }
                 }
             }
+        } catch (SQLException e) {
+            log.error("【严重ERROR】【创建PreparedStatement对象失败！】");
+            e.printStackTrace();
         }
-        // statement.close();
 
         return statement;
     }

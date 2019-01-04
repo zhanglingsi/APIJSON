@@ -32,7 +32,7 @@ import zuo.biao.apijson.RequestMethod;
 public class Controller {
 
     /**
-     * 获取
+     * 获取 查询
      */
     @PostMapping(UtilConstants.Request.GET)
     public String get(@RequestBody String request, HttpSession session) {
@@ -42,7 +42,7 @@ public class Controller {
     }
 
     /**
-     * 计数
+     * 计数 查询count(*)
      */
     @PostMapping(UtilConstants.Request.HEAD)
     public String head(@RequestBody String request, HttpSession session) {
@@ -72,7 +72,7 @@ public class Controller {
     }
 
     /**
-     * 新增
+     * 新增POST
      */
     @PostMapping(UtilConstants.Request.POST)
     public String post(@RequestBody String request, HttpSession session) {
@@ -82,7 +82,7 @@ public class Controller {
     }
 
     /**
-     * 修改
+     * 修改 PUT
      */
     @PostMapping(UtilConstants.Request.PUT)
     public String put(@RequestBody String request, HttpSession session) {
@@ -92,7 +92,7 @@ public class Controller {
     }
 
     /**
-     * 删除
+     * 删除 DELETE
      */
     @PostMapping(UtilConstants.Request.DELETE)
     public String delete(@RequestBody String request, HttpSession session) {

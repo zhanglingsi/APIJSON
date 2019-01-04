@@ -21,6 +21,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import zuo.biao.apijson.JSON;
 import zuo.biao.apijson.Log;
 import zuo.biao.apijson.NotNull;
@@ -37,6 +38,7 @@ import zuo.biao.apijson.server.model.Table;
  *
  * @author Lemon
  */
+@Slf4j
 public abstract class AbstractSQLConfig implements SQLConfig {
     private static final String TAG = "SQLConfig";
 
@@ -471,6 +473,10 @@ public abstract class AbstractSQLConfig implements SQLConfig {
         return " ORDER BY " + StringUtil.getString(keys);
     }
 
+    @Override
+    public List<List<Object>> getValues() {
+        return values;
+    }
 
     @Override
     public List<String> getColumn() {
@@ -487,7 +493,7 @@ public abstract class AbstractSQLConfig implements SQLConfig {
     public String getColumnString() throws Exception {
         switch (getMethod()) {
             case HEAD:
-            case HEADS: //StringUtil.isEmpty(column, true) || column.contains(",") 时SQL.count(column)会return "*"
+            case HEADS:
                 if (isPrepared() && column != null) {
                     for (String c : column) {
                         if (StringUtil.isName(c) == false) {
@@ -501,7 +507,7 @@ public abstract class AbstractSQLConfig implements SQLConfig {
                     throw new IllegalArgumentException("POST 请求必须在Table内设置要保存的 key:value ！");
                 }
 
-                if (isPrepared()) { //不能通过 ? 来代替，SELECT 'id','name' 返回的就是 id:"id", name:"name"，而不是数据库里的值！
+                if (isPrepared()) {
                     for (String c : column) {
                         if (StringUtil.isName(c) == false) {
                             throw new IllegalArgumentException("POST请求: 每一个 key:value 中的key都必须是1个单词！");
@@ -532,21 +538,16 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 
                 String tableAlias = getAlias();
 
-                //			String c = StringUtil.getString(column); //id,name;json_length(contactIdList):contactCount;...
+                String[] keys = column == null ? null : column.toArray(new String[]{});
 
-                String[] keys = column == null ? null : column.toArray(new String[]{}); //StringUtil.split(c, ";");
                 if (keys == null || keys.length <= 0) {
                     return isKeyPrefix() == false ? "*" : (tableAlias + ".*" + (StringUtil.isEmpty(joinColumn, true) ? "" : ", " + joinColumn));
                 }
 
-
                 String expression;
                 String method = null;
 
-                //...;fun0(arg0,arg1,...):fun0;fun1(arg0,arg1,...):fun1;...
                 for (int i = 0; i < keys.length; i++) {
-
-                    //fun(arg0,arg1,...)
                     expression = keys[i];
 
                     int start = expression.indexOf("(");
@@ -572,14 +573,13 @@ public abstract class AbstractSQLConfig implements SQLConfig {
                     String[] ckeys = StringUtil.split(isColumn ? expression : expression.substring(start + 1, end));
                     String quote = getQuote();
 
-                    //			if (isPrepared()) { //不能通过 ? 来代替，SELECT 'id','name' 返回的就是 id:"id", name:"name"，而不是数据库里的值！
                     if (ckeys != null && ckeys.length > 0) {
 
                         String origin;
                         String alias;
                         int index;
                         for (int j = 0; j < ckeys.length; j++) {
-                            index = ckeys[j].lastIndexOf(":"); //StringUtil.split返回数组中，子项不会有null
+                            index = ckeys[j].lastIndexOf(":");
                             origin = index < 0 ? ckeys[j] : ckeys[j].substring(0, index);
                             alias = index < 0 ? null : ckeys[j].substring(index + 1);
 
@@ -598,13 +598,9 @@ public abstract class AbstractSQLConfig implements SQLConfig {
                                 }
                             }
 
-                            //JOIN 副表不再在外层加副表名前缀 userId AS `Commet.userId`， 而是直接 userId AS `userId`
                             origin = quote + origin + quote;
                             if (isKeyPrefix()) {
                                 ckeys[j] = tableAlias + "." + origin;
-                                //							if (isColumn) {
-                                //								ckeys[j] += " AS " + quote + (isMain() ? "" : tableAlias + ".") + (StringUtil.isEmpty(alias, true) ? origin : alias) + quote;
-                                //							}
                                 if (isColumn && StringUtil.isEmpty(alias, true) == false) {
                                     ckeys[j] += " AS " + quote + alias + quote;
                                 }
@@ -612,15 +608,14 @@ public abstract class AbstractSQLConfig implements SQLConfig {
                                 ckeys[j] = origin + (StringUtil.isEmpty(alias, true) ? "" : " AS " + quote + alias + quote);
                             }
                         }
-                        //				}
 
                     }
 
                     if (isColumn) {
                         keys[i] = StringUtil.getString(ckeys);
                     } else {
-                        String suffix = expression.substring(end + 1, expression.length()); //:contactCount
-                        String alias = suffix.startsWith(":") ? suffix.substring(1) : null; //contactCount
+                        String suffix = expression.substring(end + 1, expression.length());
+                        String alias = suffix.startsWith(":") ? suffix.substring(1) : null;
 
                         if (StringUtil.isEmpty(alias, true)) {
                             if (suffix.isEmpty() == false) {
@@ -636,19 +631,14 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 
 
                         String origin = method + "(" + StringUtil.getString(ckeys) + ")";
-                        //					if (isKeyPrefix()) {
-                        //						keys[i] = origin + " AS " + quote + (isMain() ? "" : tableAlias + ".") + (StringUtil.isEmpty(alias, true) ? method : alias) + quote;
-                        //					}
-                        //					else {
                         keys[i] = origin + (StringUtil.isEmpty(alias, true) ? "" : " AS " + quote + alias + quote);
-                        //					}
                     }
 
                 }
 
                 String c = StringUtil.getString(keys);
 
-                return (c.contains(":") == false ? c : c.replaceAll(":", " AS ")) + (StringUtil.isEmpty(joinColumn, true) ? "" : ", " + joinColumn);//不能在这里改，后续还要用到:
+                return (!c.contains(":") ? c : c.replaceAll(":", " AS ")) + (StringUtil.isEmpty(joinColumn, true) ? "" : ", " + joinColumn);
 
             default:
                 throw new UnsupportedOperationException(
@@ -658,11 +648,6 @@ public abstract class AbstractSQLConfig implements SQLConfig {
         }
     }
 
-
-    @Override
-    public List<List<Object>> getValues() {
-        return values;
-    }
 
     @JSONField(serialize = false)
     public String getValuesString() {
@@ -826,20 +811,17 @@ public abstract class AbstractSQLConfig implements SQLConfig {
      */
     @JSONField(serialize = false)
     public String getLimitString() {
-        return getLimitString(getPage(), getCount());// + 1);
+        return getLimitString(getPage(), getCount());
     }
 
     /**
      * 获取限制数量
-     *
-     * @param limit
-     * @return
      */
     public static String getLimitString(int page, int count) {
         return count <= 0 ? "" : " LIMIT " + count + " OFFSET " + getOffset(page, count);
     }
 
-    //WHERE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
     @Override
     public Map<String, Object> getWhere() {
         return where;
@@ -948,9 +930,11 @@ public abstract class AbstractSQLConfig implements SQLConfig {
                 }
 
                 if (prior) {
-                    andList.add(i, key); //userId的优先级不能比id高  0, key);
+                    //userId的优先级不能比id高  0, key);
+                    andList.add(i, key);
                 } else {
-                    andList.add(key); //AbstractSQLExecutor.onPutColumn里getSQL，要保证缓存的SQL和查询的SQL里 where 的 key:value 顺序一致
+                    //AbstractSQLExecutor.onPutColumn里getSQL，要保证缓存的SQL和查询的SQL里 where 的 key:value 顺序一致
+                    andList.add(key);
                 }
             }
             combine.put("&", andList);
@@ -1126,17 +1110,16 @@ public abstract class AbstractSQLConfig implements SQLConfig {
      * @return
      * @throws Exception
      */
-    private String getWhereItem(String key, Object value
-            , RequestMethod method, boolean verifyName) throws Exception {
-        Log.d(TAG, "getWhereItem  key = " + key);
+    private String getWhereItem(String key, Object value, RequestMethod method, boolean verifyName) throws Exception {
+
         //避免筛选到全部	value = key == null ? null : where.get(key);
-        if (key == null || value == null || key.startsWith("@") || key.endsWith("()")) {//关键字||方法, +或-直接报错
+        //关键字||方法, +或-直接报错
+        if (key == null || value == null || key.startsWith("@") || key.endsWith("()")) {
             Log.d(TAG, "getWhereItem  key == null || value == null"
                     + " || key.startsWith(@) || key.endsWith(()) >> continue;");
             return null;
         }
-        if (key.endsWith("@")) {//引用
-            //	key = key.substring(0, key.lastIndexOf("@"));
+        if (key.endsWith("@")) {
             throw new IllegalArgumentException(TAG + ".getWhereItem: 字符 " + key + " 不合法！");
         }
 
@@ -1180,7 +1163,7 @@ public abstract class AbstractSQLConfig implements SQLConfig {
             throw new IllegalArgumentException(key + ":value 中value不合法！非PUT请求只支持 [Boolean, Number, String] 内的类型 ！");
         }
 
-        boolean not = key.endsWith("!"); // & | 没有任何意义，写法多了不好控制
+        boolean not = key.endsWith("!");
         if (not) {
             key = key.substring(0, key.length() - 1);
         }
@@ -1219,7 +1202,6 @@ public abstract class AbstractSQLConfig implements SQLConfig {
         return this;
     }
 
-    //$ search <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     /**
      * search key match value
@@ -1280,11 +1262,6 @@ public abstract class AbstractSQLConfig implements SQLConfig {
     public String getLikeString(String key, Object value) {
         return getKey(key) + " LIKE " + getValue(value);
     }
-
-    //$ search >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-    //~ regexp <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     /**
      * search key match RegExp values
@@ -1731,11 +1708,6 @@ public abstract class AbstractSQLConfig implements SQLConfig {
         return getSQL(this.setPrepared(prepared));
     }
 
-    /**
-     * @param config
-     * @return
-     * @throws Exception
-     */
     public static String getSQL(AbstractSQLConfig config) throws Exception {
         String tablePath = config == null ? null : config.getTablePath();
         if (!StringUtil.isNotEmpty(tablePath, true)) {
@@ -2157,7 +2129,7 @@ public abstract class AbstractSQLConfig implements SQLConfig {
 
             //解决 query: 1/2 查数量时报错
             /* SELECT  count(*)  AS count  FROM sys.Moment AS Moment
-			   LEFT JOIN ( SELECT count(*)  AS count FROM sys.Comment ) AS Comment ON Comment.momentId = Moment.id LIMIT 1 OFFSET 0 */
+               LEFT JOIN ( SELECT count(*)  AS count FROM sys.Comment ) AS Comment ON Comment.momentId = Moment.id LIMIT 1 OFFSET 0 */
             if (RequestMethod.isHeadMethod(method, true)) {
                 joinConfig.setMethod(GET); //子查询不能为 SELECT count(*) ，而应该是 SELECT momentId
                 joinConfig.setColumn(Arrays.asList(j.getKey())); //优化性能，不取非必要的字段
@@ -2203,10 +2175,10 @@ public abstract class AbstractSQLConfig implements SQLConfig {
      */
     public static String getRealKey(RequestMethod method, String originKey
             , boolean isTableKey, boolean saveLogic, boolean verifyName, String quote) throws Exception {
-        Log.i(TAG, "getRealKey  saveLogic = " + saveLogic + "; originKey = " + originKey);
+        log.info("【saveLogic】：{}，【originKey】：{}", saveLogic, originKey);
+
         if (originKey == null || originKey.startsWith(quote) || zuo.biao.apijson.JSONObject.isArrayKey(originKey)) {
-            Log.w(TAG, "getRealKey  originKey == null || originKey.startsWith(`)"
-                    + " || zuo.biao.apijson.JSONObject.isArrayKey(originKey) >>  return originKey;");
+
             return originKey;
         }
 
@@ -2238,21 +2210,27 @@ public abstract class AbstractSQLConfig implements SQLConfig {
             }
         }
 
-        String last = null;//不用Logic优化代码，否则 key 可能变为 key| 导致 key=value 变成 key|=value 而出错
-        if (RequestMethod.isQueryMethod(method)) {//逻辑运算符仅供GET,HEAD方法使用
+        //不用Logic优化代码，否则 key 可能变为 key| 导致 key=value 变成 key|=value 而出错
+        String last = null;
+        //逻辑运算符仅供GET,HEAD方法使用
+        if (RequestMethod.isQueryMethod(method)) {
             last = key.isEmpty() ? "" : key.substring(key.length() - 1);
             if ("&".equals(last) || "|".equals(last) || "!".equals(last)) {
                 key = key.substring(0, key.length() - 1);
             } else {
-                last = null;//避免key + StringUtil.getString(last)错误延长
+                //避免key + StringUtil.getString(last)错误延长
+                last = null;
             }
         }
 
         //"User:toUser":User转换"toUser":User, User为查询同名Table得到的JSONObject。交给客户端处理更好
-        if (isTableKey) {//不允许在column key中使用Type:key形式
-            key = Pair.parseEntry(key, true).getKey();//table以左边为准
+        //不允许在column key中使用Type:key形式
+        if (isTableKey) {
+            //table以左边为准
+            key = Pair.parseEntry(key, true).getKey();
         } else {
-            key = Pair.parseEntry(key).getValue();//column以右边为准
+            //column以右边为准
+            key = Pair.parseEntry(key).getValue();
         }
 
         if (verifyName && StringUtil.isName(key.startsWith("@") ? key.substring(1) : key) == false) {
@@ -2263,7 +2241,8 @@ public abstract class AbstractSQLConfig implements SQLConfig {
         if (saveLogic && last != null) {
             key = key + last;
         }
-        Log.i(TAG, "getRealKey  return key = " + key);
+
+        log.info("【key】：{}", key);
         return key;
     }
 
