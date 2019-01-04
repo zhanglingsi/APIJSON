@@ -2,6 +2,7 @@ package apijson.demo.server.common;
 
 import apijson.demo.server.test.DemoFunction;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.stereotype.Component;
 import zuo.biao.apijson.RequestMethod;
 import zuo.biao.apijson.server.AbstractParser;
 import zuo.biao.apijson.server.JSONRequest;
@@ -86,29 +87,11 @@ public class StandardParser extends AbstractParser<Long> {
             public JSONObject parseResponse(JSONRequest request) throws Exception {
                 StandardParser demoParser = new StandardParser(RequestMethod.GET);
                 demoParser.setSession(session);
-                //						parser.setNoVerifyRequest(noVerifyRequest)
+                //parser.setNoVerifyRequest(noVerifyRequest)
                 demoParser.setNoVerifyLogin(noVerifyLogin);
                 demoParser.setNoVerifyRole(noVerifyRole);
                 return demoParser.parseResponse(request);
             }
-
-
-            //			@Override
-            //			protected DemoSQLConfig newQueryConfig() {
-            //				if (itemConfig != null) {
-            //					return itemConfig;
-            //				}
-            //				return super.newQueryConfig();
-            //			}
-
-            //导致最多评论的(Strong 30个)的那个动态详情界面Android(82001)无姓名和头像，即User=null
-            //			@Override
-            //			protected void onComplete() {
-            //				if (response != null) {
-            //					putQueryResult(path, response);//解决获取关联数据时requestObject里不存在需要的关联数据
-            //				}
-            //			}
-
         }.setMethod(requestMethod).setParser(this);
     }
 

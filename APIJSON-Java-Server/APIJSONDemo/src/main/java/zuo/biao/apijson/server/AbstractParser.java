@@ -53,6 +53,7 @@ import zuo.biao.apijson.server.exception.OutOfRangeException;
  */
 @Slf4j
 public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
+
     protected static final String TAG = "AbstractParser";
 
     public AbstractParser() {
@@ -374,7 +375,7 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
     public static JSONObject parseRequest(String request) throws Exception {
         JSONObject obj = JSON.parseObject(request);
         if (obj == null) {
-            throw new UnsupportedEncodingException("JSON格式不合法！");
+            throw new UnsupportedEncodingException("【JSON格式不合法！】");
         }
         return obj;
     }
@@ -547,22 +548,7 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
      */
     @Override
     public JSONObject parseCorrectResponse(String table, JSONObject response) throws Exception {
-        //		Log.d(TAG, "getCorrectResponse  method = " + method + "; table = " + table);
-        //		if (response == null || response.isEmpty()) {//避免无效空result:{}添加内容后变有效
-        //			Log.e(TAG, "getCorrectResponse  response == null || response.isEmpty() >> return response;");
         return response;
-        //		}
-        //
-        //		JSONObject target = zuo.biao.apijson.JSONObject.isTableKey(table) == false
-        //				? new JSONObject() : getStructure(method, "Response", "model", table);
-        //
-        //				return MethodStructure.parseResponse(method, table, target, response, new OnParseCallback() {
-        //
-        //					@Override
-        //					protected JSONObject onParseJSONObject(String key, JSONObject tobj, JSONObject robj) throws Exception {
-        //						return getCorrectResponse(method, key, robj);
-        //					}
-        //				});
     }
 
     /**
@@ -598,7 +584,8 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
         //too many connections error: 不try-catch，可以让客户端看到是服务器内部异常
         try {
             JSONObject result = executor.execute(config.setCacheStatic(true));
-            return getJSONObject(result, "structure");//解决返回值套了一层 "structure":{}
+            //解决返回值套了一层 "structure":{}
+            return getJSONObject(result, "structure");
         } finally {
             executor.close();
         }
@@ -615,9 +602,9 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
     public JSONObject onObjectParse(final JSONObject request
             , String parentPath, String name, final SQLConfig arrayConfig) throws Exception {
 
-        log.info("【parentPath】：{}， 【name】：{}，【arrayConfig】：{}", parentPath, name, arrayConfig);
+        log.info("【request】：{}，【parentPath】：{}， 【name】：{}，【arrayConfig】：{}", request, parentPath, name, arrayConfig);
 
-        if (request == null) {// Moment:{}   || request.isEmpty()) {//key-value条件
+        if (request == null) {
             return null;
         }
 
@@ -627,8 +614,9 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 
 
         JSONObject response = null;
-        if (op != null) {//TODO SQL查询结果为空时，functionMap和customMap还有没有意义？
-            if (arrayConfig == null) {//Common
+        //TODO SQL查询结果为空时，functionMap和customMap还有没有意义？
+        if (op != null) {
+            if (arrayConfig == null) {
                 response = op.executeSQL().response();
             } else {//Array Item Child
                 int query = arrayConfig.getQuery();
@@ -644,7 +632,8 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
                             putQueryResult(parentPath.substring(0, index) + "]/" + JSONResponse.KEY_TOTAL, total);
 
                             if (total <= arrayConfig.getCount() * arrayConfig.getPage()) {
-                                query = JSONRequest.QUERY_TOTAL;//数量不够了，不再往后查询
+                                //数量不够了，不再往后查询
+                                query = JSONRequest.QUERY_TOTAL;
                             }
                         }
                     }
@@ -654,12 +643,12 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 
                 //Table
                 if (query == JSONRequest.QUERY_TOTAL) {
-                    response = null;//不再往后查询
+                    //不再往后查询
+                    response = null;
                 } else {
                     response = op.executeSQL(
                             arrayConfig.getCount(), arrayConfig.getPage(), arrayConfig.getPosition()
                     ).response();
-                    //					itemConfig = op.getConfig();
                 }
             }
 
@@ -1166,8 +1155,8 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
      */
     @Override
     public synchronized JSONObject executeSQL(SQLConfig config) throws Exception {
-        Log.i(TAG, "executeSQL  config = " + JSON.toJSONString(config));
-        if (noVerifyRole == false) {
+
+        if (!noVerifyRole) {
             if (config.getRole() == null) {
                 if (globalRole != null) {
                     config.setRole(globalRole);

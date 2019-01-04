@@ -128,7 +128,6 @@ public interface SQLConfig {
 
     /**
      * 数据库里的真实Table名
-     * 通过 {@link #TABLE_KEY_MAP} 映射
      *
      * @return
      */
@@ -170,26 +169,10 @@ public interface SQLConfig {
 
     SQLConfig setCombine(Map<String, List<String>> combine);
 
-    /**
-     * exactMatch = false
-     *
-     * @param key
-     * @return
-     */
     Object getWhere(String key);
 
-    /**
-     * @param key
-     * @param exactMatch
-     * @return
-     */
     Object getWhere(String key, boolean exactMatch);
 
-    /**
-     * @param key
-     * @param value
-     * @return
-     */
     SQLConfig putWhere(String key, Object value, boolean prior);
 
     boolean isPrepared();
