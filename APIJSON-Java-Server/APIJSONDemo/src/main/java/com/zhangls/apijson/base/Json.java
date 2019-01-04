@@ -1,33 +1,20 @@
-/*Copyright ©2016 TommyLemon(https://github.com/TommyLemon/APIJSON)
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.*/
-
-package zuo.biao.apijson;
+package com.zhangls.apijson.base;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.zhangls.apijson.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 /**
- * 阿里FastJSON封装类 防止解析时异常
- *
- * @author Lemon
+ * Created by zhangls on 2019/1/4.
+ * @author zhangls
  */
-public class JSON {
-    private static final String TAG = "JSON";
+@Slf4j
+public class Json {
 
     /**
      * 判断json格式是否正确
@@ -36,7 +23,7 @@ public class JSON {
      * @return
      */
     public static boolean isJsonCorrect(String s) {
-        //太长		Log.i(TAG, "isJsonCorrect  <<<<     " + s + "     >>>>>>>");
+
         if (s == null
                 //				|| s.equals("[]")
                 //				|| s.equals("{}")
@@ -80,7 +67,7 @@ public class JSON {
     }
 
     /**
-     * @param json
+     * @param
      * @return
      */
     public static Object parse(Object obj) {
@@ -89,7 +76,7 @@ public class JSON {
         try {
             return com.alibaba.fastjson.JSON.parse(obj instanceof String ? (String) obj : toJSONString(obj), features);
         } catch (Exception e) {
-            Log.i(TAG, "parse  catch \n" + e.getMessage());
+            log.error("转换异常：{}", e.getMessage());
         }
         return null;
     }
@@ -97,7 +84,7 @@ public class JSON {
     /**
      * obj转JSONObject
      *
-     * @param json
+     * @param
      * @return
      */
     public static JSONObject parseObject(Object obj) {
@@ -130,7 +117,7 @@ public class JSON {
         try {
             return com.alibaba.fastjson.JSON.parseObject(getCorrectJson(json), JSONObject.class, features);
         } catch (Exception e) {
-            Log.i(TAG, "parseObject  catch \n" + e.getMessage());
+            log.error("转换异常：{}", e.getMessage());
         }
         return null;
     }
@@ -155,14 +142,14 @@ public class JSON {
      */
     public static <T> T parseObject(String json, Class<T> clazz) {
         if (clazz == null) {
-            Log.e(TAG, "parseObject  clazz == null >> return null;");
+            log.error("参数类型异常：{}", clazz);
         } else {
             try {
                 int features = com.alibaba.fastjson.JSON.DEFAULT_PARSER_FEATURE;
                 features |= Feature.OrderedField.getMask();
                 return com.alibaba.fastjson.JSON.parseObject(getCorrectJson(json), clazz, features);
             } catch (Exception e) {
-                Log.i(TAG, "parseObject  catch \n" + e.getMessage());
+                log.error("转换异常：{}", e.getMessage());
             }
         }
         return null;
@@ -201,7 +188,7 @@ public class JSON {
         try {
             return com.alibaba.fastjson.JSON.parseArray(getCorrectJson(json, true));
         } catch (Exception e) {
-            Log.i(TAG, "parseArray  catch \n" + e.getMessage());
+            log.error("转换异常：{}", e.getMessage());
         }
         return null;
     }
@@ -226,12 +213,12 @@ public class JSON {
      */
     public static <T> List<T> parseArray(String json, Class<T> clazz) {
         if (clazz == null) {
-            Log.e(TAG, "parseArray  clazz == null >> return null;");
+            log.error("参数类型异常：{}", clazz);
         } else {
             try {
                 return com.alibaba.fastjson.JSON.parseArray(getCorrectJson(json, true), clazz);
             } catch (Exception e) {
-                Log.i(TAG, "parseArray  catch \n" + e.getMessage());
+                log.error("转换异常：{}", e.getMessage());
             }
         }
         return null;
@@ -250,7 +237,7 @@ public class JSON {
         try {
             return com.alibaba.fastjson.JSON.toJSONString(obj);
         } catch (Exception e) {
-            Log.e(TAG, "toJSONString  catch \n" + e.getMessage());
+            log.error("转换异常：{}", e.getMessage());
         }
         return null;
     }
@@ -269,7 +256,7 @@ public class JSON {
         try {
             return com.alibaba.fastjson.JSON.toJSONString(obj, features);
         } catch (Exception e) {
-            Log.e(TAG, "parseArray  catch \n" + e.getMessage());
+            log.error("转换异常：{}", e.getMessage());
         }
         return null;
     }
@@ -309,7 +296,7 @@ public class JSON {
                 JSONObject json = parseObject((String) obj);
                 return json != null && json.isEmpty() == false;
             } catch (Exception e) {
-                Log.e(TAG, "isJSONObject  catch \n" + e.getMessage());
+                log.error("转换异常：{}", e.getMessage());
             }
         }
 
@@ -331,7 +318,7 @@ public class JSON {
                 JSONArray json = parseArray((String) obj);
                 return json != null && json.isEmpty() == false;
             } catch (Exception e) {
-                Log.e(TAG, "isJSONArray  catch \n" + e.getMessage());
+                log.error("转换异常：{}", e.getMessage());
             }
         }
 
@@ -347,5 +334,4 @@ public class JSON {
     public static boolean isBooleanOrNumberOrString(Object obj) {
         return obj instanceof Boolean || obj instanceof Number || obj instanceof String;
     }
-
 }

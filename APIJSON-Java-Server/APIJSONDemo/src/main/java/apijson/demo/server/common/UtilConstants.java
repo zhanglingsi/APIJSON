@@ -33,8 +33,14 @@ public interface UtilConstants {
         public static final String PASS_WORD = "password";
         public static final String TYPE = "type";
         public static final String REMEMBER = "remember";
-        public static final int LOGIN_TYPE_PASSWORD = 0;
-        public static final int LOGIN_TYPE_VERIFY = 1;
+        /**
+         * 密码登陆
+         */
+        public static final Integer LOGIN_TYPE_PASSWORD = 0;
+        /**
+         * 验证码登陆
+         */
+        public static final Integer LOGIN_TYPE_VERIFY = 1;
     }
 
     /**
