@@ -1,6 +1,6 @@
 package apijson.demo.server.service.impl;
 
-import apijson.demo.server.DAO.StandardDAO;
+import apijson.demo.server.mapper.StandardMapper;
 import apijson.demo.server.service.LoginNewService;
 import com.alibaba.fastjson.JSONObject;
 import com.zhangls.apijson.base.JsonResponse;
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 public class LoginNewServiceImpl implements LoginNewService {
 
     @Autowired
-    private StandardDAO standardDAO;
+    private StandardMapper mapper;
 
     @Override
     public JsonResponse loginNewJson(JSONObject reqJson) {

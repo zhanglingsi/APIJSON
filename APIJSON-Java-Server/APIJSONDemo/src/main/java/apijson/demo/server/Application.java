@@ -1,14 +1,19 @@
 package apijson.demo.server;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 
 /**
@@ -16,12 +21,20 @@ import org.springframework.web.filter.CorsFilter;
  *
  * @author Lemon
  */
-@Configuration
 @SpringBootApplication
-public class ApiJsonApplication {
+@MapperScan("apijson.demo.server.mapper")
+public class Application {
+
+    @Bean
+    public CharacterEncodingFilter filter () {
+        CharacterEncodingFilter filter =new CharacterEncodingFilter();
+        filter.setEncoding("UTF-8");
+        filter.setForceEncoding(true);
+        return filter;
+    }
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(ApiJsonApplication.class, args);
+        SpringApplication.run(Application.class, args);
 
 //		System.out.println("\n\n\n\n\n<<<<<<<<<<<<<<<<<<<<<<<<< APIJSON >>>>>>>>>>>>>>>>>>>>>>>>\n");
 //		System.out.println("开始测试:远程函数 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
