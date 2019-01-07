@@ -16,20 +16,16 @@ public interface StandardMapper {
     /**
      * 通用查询方法
      *
-     * @param sql
-     * @return
+     * @param sql 执行原生SQL语句
+     * @return 返回有序查询结果
      */
-    List<LinkedHashMap<String, Object>> superManagerSelect(String sql);
+    List<LinkedHashMap<String, Object>> standardSelect(String sql);
 
-
-//    @Insert("INSERT INTO users(userName,passWord,user_sex) VALUES(#{userName}, #{passWord}, #{userSex})")
-//    Boolean insert(UserEntity user);
-//
-//    @Update("UPDATE users SET userName=#{userName},nick_name=#{nickName} WHERE id =#{id}")
-//    Boolean update(UserEntity user);
-//
-//    @Delete("DELETE FROM users WHERE id =#{id}")
-//    Boolean delete(Long id);
-
+    /**
+     * 通用方法 增、删、改 都用此方法
+     * @param sql 执行原生SQL语句
+     * @return 影响的行数
+     */
+    Integer standardInsert(String sql);
 
 }

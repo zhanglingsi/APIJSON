@@ -95,7 +95,7 @@ public class Json {
     }
 
     /**
-     * json转JSONObject
+     * String转JSONObject
      *
      * @param json
      * @return

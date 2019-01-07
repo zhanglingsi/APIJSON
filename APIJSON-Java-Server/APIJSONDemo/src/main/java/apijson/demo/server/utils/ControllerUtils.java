@@ -5,12 +5,15 @@ import apijson.demo.server.common.UtilConstants;
 import apijson.demo.server.model.BaseModel;
 import apijson.demo.server.model.Verify;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import zuo.biao.apijson.JSONResponse;
+import zuo.biao.apijson.RequestMethod;
 import zuo.biao.apijson.StringUtil;
 import zuo.biao.apijson.server.JSONRequest;
 import zuo.biao.apijson.server.exception.ConditionErrorException;
 import zuo.biao.apijson.server.exception.NotExistException;
 
+import javax.servlet.http.HttpSession;
 import java.util.concurrent.TimeoutException;
 
 import static zuo.biao.apijson.RequestMethod.DELETE;
@@ -21,6 +24,7 @@ import static zuo.biao.apijson.RequestMethod.HEADS;
  * Created by zhangls on 2019/1/2.
  * @author zhangls
  */
+@Slf4j
 public class ControllerUtils {
 
     /**
@@ -60,5 +64,28 @@ public class ControllerUtils {
                         new JSONRequest(new Verify(type, phone).setVerify(code)).setFormat(true)
                 )
         );
+    }
+
+    /**
+     * 校验方法
+     * @param method
+     * @param reqJson
+     * @param session
+     * @return
+     */
+    public static JSONObject standardValidator(RequestMethod method, String reqJson, HttpSession session){
+        // 1. 转换验证
+        JSONObject requestObject = null;
+        try {
+            requestObject = JsonParseUtils.parseRequest(reqJson);
+            log.info("【请求JSON串转换JSONObject成功！】");
+        } catch (Exception e) {
+            return JsonParseUtils.newErrorResult(e);
+        }
+
+        // 2. 权限验证
+
+
+        return requestObject;
     }
 }

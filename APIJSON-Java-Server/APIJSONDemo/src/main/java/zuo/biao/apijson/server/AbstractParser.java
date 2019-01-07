@@ -78,6 +78,9 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+    /**
+     * User的信息访问白名单
+     */
     @NotNull
     protected Visitor<T> visitor;
 
@@ -231,7 +234,6 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 
     /**
      * 解析请求json并获取对应结果
-     *
      */
     @Override
     public String parse(String request) {
@@ -506,7 +508,8 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
     @Override
     public JSONObject parseCorrectRequest() throws Exception {
         if (RequestMethod.isPublicMethod(requestMethod)) {
-            return requestObject;//需要指定JSON结构的get请求可以改为post请求。一般只有对安全性要求高的才会指定，而这种情况用明文的GET方式几乎肯定不安全
+            //需要指定JSON结构的get请求可以改为post请求。一般只有对安全性要求高的才会指定，而这种情况用明文的GET方式几乎肯定不安全
+            return requestObject;
         }
 
         String tag = requestObject.getString(JSONRequest.KEY_TAG);
@@ -522,12 +525,15 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
         } catch (Exception e) {
             error = e.getMessage();
         }
-        if (object == null) {//empty表示随意操作  || object.isEmpty()) {
+
+        //empty表示随意操作  || object.isEmpty()) {
+        if (object == null) {
             throw new UnsupportedOperationException("非开放请求必须是Request表中校验规则允许的操作！\n " + error);
         }
 
         JSONObject target = null;
-        if (zuo.biao.apijson.JSONObject.isTableKey(tag) && object.containsKey(tag) == false) {//tag是table名
+        //tag是table名
+        if (zuo.biao.apijson.JSONObject.isTableKey(tag) && object.containsKey(tag) == false) {
             target = new JSONObject(true);
             target.put(tag, object);
         } else {
@@ -537,6 +543,7 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 
         requestObject.remove(JSONRequest.KEY_TAG);
         requestObject.remove(JSONRequest.KEY_VERSION);
+
         return parseCorrectRequest((JSONObject) target.clone());
     }
 
@@ -596,7 +603,6 @@ public abstract class AbstractParser<T> implements Parser<T>, SQLCreator {
 
     /**
      * 获取单个对象，该对象处于parentObject内
-     *
      */
     @Override
     public JSONObject onObjectParse(final JSONObject request

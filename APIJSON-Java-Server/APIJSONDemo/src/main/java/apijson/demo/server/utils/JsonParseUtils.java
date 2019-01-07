@@ -6,6 +6,11 @@ import com.zhangls.apijson.base.Json;
 import com.zhangls.apijson.base.JsonResponse;
 import com.zhangls.apijson.base.exception.*;
 import com.zhangls.apijson.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
+import zuo.biao.apijson.parser.APIJSONProvider;
+import zuo.biao.apijson.parser.SQLExplorer;
+import zuo.biao.apijson.parser.SQLProviderException;
+import zuo.biao.apijson.parser.StatementType;
 
 import javax.activation.UnsupportedDataTypeException;
 import java.io.UnsupportedEncodingException;
@@ -13,34 +18,27 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Created by zhangls on 2019/1/4.
+ * @author zhangls
  */
+@Slf4j
 public class JsonParseUtils {
 
-    /**
-     * 解析请求JSONObject
-     *
-     * @param request => URLDecoder.decode(request, UTF_8);
-     * @return
-     * @throws Exception
-     */
-    @NotNull
-    public static JSONObject parseRequest(String request) throws UnsupportedEncodingException {
-        JSONObject obj = Json.parseObject(request);
-        if (obj == null) {
-            throw new UnsupportedEncodingException("【JSON格式不合法！】");
-        }
-        return obj;
-    }
 
     /**
-     * 添加请求成功的状态内容
-     *
-     * @param object
+     * 解析Json to Sql
+     * @param reqJson
      * @return
+     * @throws SQLProviderException
      */
-    public static JSONObject extendErrorResult(com.alibaba.fastjson.JSONObject object, Exception e) {
-        JSONObject error = newErrorResult(e);
-        return extendResult(object, error.getIntValue(JsonResponse.KEY_CODE), error.getString(JsonResponse.KEY_MSG));
+    public static String JsonToSql(JSONObject reqJson) throws SQLProviderException {
+        //一个APIJSON解析器拿到一个json对象
+        APIJSONProvider apijsonProvider = new APIJSONProvider(reqJson);
+        //当前为查询模式，还支持新增，修改，删除
+        apijsonProvider.setStatementType(StatementType.SELECT);
+        //装载APIJSON解析器
+        SQLExplorer builder = new SQLExplorer(apijsonProvider);
+        //拿到SQL
+        return builder.getSQL();
     }
 
     /**
@@ -122,4 +120,52 @@ public class JsonParseUtils {
 
         return object;
     }
+
+
+    /**
+     * 添加请求成功的状态内容
+     *
+     * @param object
+     * @return
+     */
+    public static JSONObject extendSuccessResult(JSONObject object) {
+        return extendResult(object, JsonResponse.CODE_SUCCESS, JsonResponse.MSG_SUCCEED);
+    }
+
+    /**
+     * 获取请求成功的状态内容
+     *
+     * @return
+     */
+    public static JSONObject newSuccessResult() {
+        return newResult(JsonResponse.CODE_SUCCESS, JsonResponse.MSG_SUCCEED);
+    }
+
+    /**
+     * 添加请求成功的状态内容
+     *
+     * @param object
+     * @return
+     */
+    public static JSONObject extendErrorResult(JSONObject object, Exception e) {
+        JSONObject error = newErrorResult(e);
+        return extendResult(object, error.getIntValue(JsonResponse.KEY_CODE), error.getString(JsonResponse.KEY_MSG));
+    }
+
+    /**
+     * 解析请求JSONObject
+     *
+     * @param request => URLDecoder.decode(request, UTF_8);
+     * @return
+     * @throws Exception
+     */
+    @NotNull
+    public static JSONObject parseRequest(String request) throws Exception {
+        JSONObject obj = Json.parseObject(request);
+        if (obj == null) {
+            throw new UnsupportedEncodingException("【JSON格式不合法！】");
+        }
+        return obj;
+    }
+
 }

@@ -107,6 +107,7 @@ public abstract class AbstractVerifier<T> implements Verifier<T> {
 
     @NotNull
     protected Visitor<T> visitor;
+
     protected Object visitorId;
 
     @NotNull
