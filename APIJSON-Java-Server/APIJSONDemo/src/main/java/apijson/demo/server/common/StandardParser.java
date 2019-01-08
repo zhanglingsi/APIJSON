@@ -2,7 +2,6 @@ package apijson.demo.server.common;
 
 import apijson.demo.server.test.DemoFunction;
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.stereotype.Component;
 import zuo.biao.apijson.RequestMethod;
 import zuo.biao.apijson.server.AbstractParser;
 import zuo.biao.apijson.server.JSONRequest;

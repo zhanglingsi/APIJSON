@@ -71,4 +71,13 @@ public interface UtilConstants {
         public static final String OLD_PASS_WORD = "oldPassword";
         public static final String VERIFY = "verify";
     }
+
+    class Jwt {
+        public static final String JWT_KEY = "secretkey";
+        public static final String JWT_BEARER = "Beater";
+        public static final String JWT_AUTHOR = "Authorization";
+        public static final String JWT_ID = "jwtId";
+        public static final String JWT_USER_INFO = "jwtUserInfo";
+
+    }
 }

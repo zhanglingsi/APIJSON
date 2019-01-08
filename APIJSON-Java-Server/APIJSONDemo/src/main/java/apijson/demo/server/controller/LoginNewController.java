@@ -4,7 +4,10 @@ package apijson.demo.server.controller;
 import apijson.demo.server.common.UtilConstants;
 import apijson.demo.server.service.LoginNewService;
 import apijson.demo.server.utils.JsonParseUtils;
+import apijson.demo.server.utils.JwtUtils;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.zhangls.apijson.base.JsonResponse;
 import com.zhangls.apijson.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 
 /**
@@ -59,7 +63,7 @@ public class LoginNewController {
      * @return
      */
     @PostMapping("loginNew")
-    public JSONObject login(@RequestBody String reqStr, HttpSession session) {
+    public String login(@RequestBody String reqStr, HttpSession session) {
         log.info("#################登陆开始##########################################################################");
         // 1. 打印请求字符串
         log.info("【登陆请求字符串】：{}", reqStr);
@@ -86,11 +90,18 @@ public class LoginNewController {
                 }
             }
         } catch (Exception e) {
-            return JsonParseUtils.extendErrorResult(reqParse, e);
+            return JsonParseUtils.extendErrorResult(reqParse, e).toJSONString();
         }
 
-        // 3. 请求Service返回结果(JSONObject对象)
-        JsonResponse response = service.loginNewJson(reqParse);
+        // 3. 请求Service返回结果(JSONObject对象) ,验证成功 返回token串
+//        JsonResponse response = service.loginNewJson(reqParse);
+
+        Map<String,Object> userInfo = Maps.newHashMap();
+        userInfo.put("userId", "1001");
+        userInfo.put("roleId", "2001");
+
+        JSONObject object = new JSONObject();
+        object.put("token", JwtUtils.createToken(userInfo));
 
         // 4. 设置登陆会话Session
         //用户id
@@ -115,6 +126,6 @@ public class LoginNewController {
 
 
         log.info("#################登陆结束##########################################################################");
-        return response;
+        return object.toJSONString();
     }
 }

@@ -7,7 +7,7 @@ import apijson.demo.server.model.Verify;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import zuo.biao.apijson.JSONResponse;
-import zuo.biao.apijson.RequestMethod;
+import com.zhangls.apijson.base.model.RequestMethod;
 import zuo.biao.apijson.StringUtil;
 import zuo.biao.apijson.server.JSONRequest;
 import zuo.biao.apijson.server.exception.ConditionErrorException;
@@ -70,10 +70,9 @@ public class ControllerUtils {
      * 校验方法
      * @param method
      * @param reqJson
-     * @param session
      * @return
      */
-    public static JSONObject standardValidator(RequestMethod method, String reqJson, HttpSession session){
+    public static JSONObject standardValidator(RequestMethod method, String reqJson){
         // 1. 转换验证
         JSONObject requestObject = null;
         try {
