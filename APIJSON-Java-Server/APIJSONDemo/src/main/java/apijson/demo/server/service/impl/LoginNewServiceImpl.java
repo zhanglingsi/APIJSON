@@ -1,11 +1,14 @@
 package apijson.demo.server.service.impl;
 
+import apijson.demo.server.common.UtilConstants;
 import apijson.demo.server.mapper.StandardMapper;
 import apijson.demo.server.service.LoginNewService;
 import com.alibaba.fastjson.JSONObject;
-import com.zhangls.apijson.base.JsonResponse;
+import com.zhangls.apijson.base.JsonApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedHashMap;
 
 /**
  * Created by zhangls on 2019/1/4.
@@ -30,9 +33,18 @@ public class LoginNewServiceImpl implements LoginNewService {
     private StandardMapper mapper;
 
     @Override
-    public JsonResponse loginNewJson(JSONObject reqJson) {
+    public JsonApiResponse loginNewJson(JSONObject reqJson) {
 
         //1. 查询手机号是否存在  head方法
+
+        String phone = reqJson.getString(UtilConstants.Login.PHONE);
+        String password = reqJson.getString(UtilConstants.Login.PASS_WORD);
+
+        Boolean isPhone =  mapper.countUserByPhone(phone) > 0;
+
+        LinkedHashMap<String, Object> user = mapper.queryUserByPhone(phone);
+
+
 
 
         //2. 根据手机号码查询用户隐私表信息，从中获取用户ID

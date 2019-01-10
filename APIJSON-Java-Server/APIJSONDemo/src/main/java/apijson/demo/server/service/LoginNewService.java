@@ -2,7 +2,7 @@ package apijson.demo.server.service;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.zhangls.apijson.base.JsonResponse;
+import com.zhangls.apijson.base.JsonApiResponse;
 
 /**
  * Created by zhangls on 2019/1/4.
@@ -14,5 +14,5 @@ public interface LoginNewService {
      * @param reqJson
      * @return
      */
-    public JsonResponse loginNewJson(JSONObject reqJson);
+    public JsonApiResponse loginNewJson(JSONObject reqJson);
 }

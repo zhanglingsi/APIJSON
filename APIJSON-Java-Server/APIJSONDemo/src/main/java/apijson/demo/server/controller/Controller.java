@@ -1,23 +1,24 @@
 package apijson.demo.server.controller;
 
-import static zuo.biao.apijson.RequestMethod.DELETE;
-import static zuo.biao.apijson.RequestMethod.GET;
-import static zuo.biao.apijson.RequestMethod.GETS;
-import static zuo.biao.apijson.RequestMethod.HEAD;
-import static zuo.biao.apijson.RequestMethod.HEADS;
-import static zuo.biao.apijson.RequestMethod.POST;
-import static zuo.biao.apijson.RequestMethod.PUT;
+import static com.zhangls.apijson.base.model.RequestMethod.DELETE;
+import static com.zhangls.apijson.base.model.RequestMethod.GET;
+import static com.zhangls.apijson.base.model.RequestMethod.GETS;
+import static com.zhangls.apijson.base.model.RequestMethod.HEAD;
+import static com.zhangls.apijson.base.model.RequestMethod.HEADS;
+import static com.zhangls.apijson.base.model.RequestMethod.POST;
+import static com.zhangls.apijson.base.model.RequestMethod.PUT;
 
 import java.net.URLDecoder;
 
 import javax.servlet.http.HttpSession;
 
 import apijson.demo.server.common.StandardParser;
+import com.zhangls.apijson.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import zuo.biao.apijson.*;
-import zuo.biao.apijson.RequestMethod;
+
+import com.zhangls.apijson.base.model.RequestMethod;
 
 /**
  * 通用Controller

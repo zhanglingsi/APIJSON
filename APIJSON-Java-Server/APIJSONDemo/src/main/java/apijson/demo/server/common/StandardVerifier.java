@@ -1,10 +1,9 @@
 package apijson.demo.server.common;
 
 import apijson.demo.server.model.*;
-import zuo.biao.apijson.Log;
-import zuo.biao.apijson.MethodAccess;
-import zuo.biao.apijson.server.AbstractVerifier;
-import zuo.biao.apijson.server.Visitor;
+import com.zhangls.apijson.annotation.MethodAccess;
+import com.zhangls.apijson.base.service.Visitor;
+import com.zhangls.apijson.base.service.impl.AbstractVerifier;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
@@ -61,7 +60,6 @@ public class StandardVerifier extends AbstractVerifier<Long> {
      * @modifier Lemon
      */
     public static void verifyLogin(HttpSession session) throws Exception {
-        Log.d(TAG, "verifyLogin  session.getId() = " + (session == null ? null : session.getId()));
         new StandardVerifier().setVisitor(getVisitor(session)).verifyLogin();
     }
 

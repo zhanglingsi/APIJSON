@@ -1,20 +1,4 @@
-/*Copyright ©2016 TommyLemon(https://github.com/TommyLemon/APIJSON)
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.*/
-
 package com.zhangls.apijson.utils;
-
-import zuo.biao.apijson.Log;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -544,7 +528,6 @@ public class StringUtil {
         }
         number = getString(number);
         if (number.length() == 15) {
-            Log.i(TAG, "isIDCard number.length() == 15 old IDCard");
             currentString = number;
             return true;
         }
@@ -698,7 +681,6 @@ public class StringUtil {
      * @return
      */
     public static String getCorrectUrl(String url) {
-        Log.i(TAG, "getCorrectUrl : \n" + url);
         if (isNotEmpty(url, true) == false) {
             return "";
         }
@@ -795,7 +777,6 @@ public class StringUtil {
         }
         //单独写到getCorrectPrice? >>>>>>>>>>>>>>>>>>>>>>
 
-        Log.i(TAG, "getPrice  <<<<<<<<<<<<<<<<<< correctPrice =  " + correctPrice);
         if (correctPrice.contains(".")) {
             //			if (correctPrice.startsWith(".")) {
             //				correctPrice = 0 + correctPrice;
@@ -805,7 +786,6 @@ public class StringUtil {
             }
         }
 
-        Log.i(TAG, "getPrice correctPrice =  " + correctPrice + " >>>>>>>>>>>>>>>>");
         return isNotEmpty(correctPrice, true) ? getPrice(new BigDecimal(0 + correctPrice), formatType) : getPrice(0, formatType);
     }
 

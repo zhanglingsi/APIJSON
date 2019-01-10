@@ -1,6 +1,7 @@
 package apijson.demo.server.model;
 
-import zuo.biao.apijson.MethodAccess;
+
+import com.zhangls.apijson.annotation.MethodAccess;
 
 /**
  * 评论

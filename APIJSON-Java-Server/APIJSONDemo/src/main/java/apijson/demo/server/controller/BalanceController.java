@@ -6,20 +6,18 @@ import apijson.demo.server.common.UtilConstants;
 import apijson.demo.server.model.BaseModel;
 import apijson.demo.server.model.Privacy;
 import com.alibaba.fastjson.JSONObject;
+import com.zhangls.apijson.base.JsonApiRequest;
+import com.zhangls.apijson.base.JsonApiResponse;
+import com.zhangls.apijson.base.exception.ConditionErrorException;
+import com.zhangls.apijson.base.exception.OutOfRangeException;
+import com.zhangls.apijson.base.model.RequestMethod;
+import com.zhangls.apijson.utils.StringUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import zuo.biao.apijson.JSONResponse;
-import zuo.biao.apijson.StringUtil;
-import zuo.biao.apijson.server.JSONRequest;
-import zuo.biao.apijson.server.exception.ConditionErrorException;
-import zuo.biao.apijson.server.exception.OutOfRangeException;
 
 import javax.servlet.http.HttpSession;
 
-import static zuo.biao.apijson.RequestMethod.GETS;
-import static zuo.biao.apijson.RequestMethod.HEADS;
-import static zuo.biao.apijson.RequestMethod.PUT;
 
 /**
  * Created by zhangls on 2019/1/2.
@@ -53,7 +51,7 @@ public class BalanceController {
         double change;
         try {
             StandardVerifier.verifyLogin(session);
-            requestObject = new StandardParser(PUT).setRequest(StandardParser.parseRequest(request)).parseCorrectRequest();
+            requestObject = new StandardParser(RequestMethod.PUT).setRequest(StandardParser.parseRequest(request)).parseCorrectRequest();
 
             privacyObj = requestObject.getJSONObject(UtilConstants.Public.PRIVACY_);
             if (privacyObj == null) {
@@ -76,13 +74,13 @@ public class BalanceController {
         //验证密码<<<<<<<<<<<<<<<<<<<<<<<
 
         privacyObj.remove("balance+");
-        JSONResponse response = new JSONResponse(
-                new StandardParser(HEADS, true).setSession(session).parseResponse(
-                        new JSONRequest(UtilConstants.Public.PRIVACY_, privacyObj)
+        JsonApiResponse response = new JsonApiResponse(
+                new StandardParser(RequestMethod.HEADS, true).setSession(session).parseResponse(
+                        new JsonApiRequest(UtilConstants.Public.PRIVACY_, privacyObj)
                 )
         );
         response = response.getJSONResponse(UtilConstants.Public.PRIVACY_);
-        if (JSONResponse.isExist(response) == false) {
+        if (JsonApiResponse.isExist(response) == false) {
             return StandardParser.extendErrorResult(requestObject, new ConditionErrorException("支付密码错误！"));
         }
 
@@ -101,9 +99,9 @@ public class BalanceController {
         //验证金额范围>>>>>>>>>>>>>>>>>>>>>>>>
 
         if (change < 0) {//提现
-            response = new JSONResponse(
-                    new StandardParser(GETS, true).parseResponse(
-                            new JSONRequest(
+            response = new JsonApiResponse(
+                    new StandardParser(RequestMethod.GETS, true).parseResponse(
+                            new JsonApiRequest(
                                     new Privacy(userId)
                             )
                     )
@@ -123,9 +121,9 @@ public class BalanceController {
         privacyObj.remove(UtilConstants.Balance._PAY_PASS_WORD);
         privacyObj.put("balance+", change);
         requestObject.put(UtilConstants.Public.PRIVACY_, privacyObj);
-        requestObject.put(JSONRequest.KEY_TAG, UtilConstants.Public.PRIVACY_);
-        requestObject.put(JSONRequest.KEY_FORMAT, true);
+        requestObject.put(JsonApiRequest.KEY_TAG, UtilConstants.Public.PRIVACY_);
+        requestObject.put(JsonApiRequest.KEY_FORMAT, true);
         //不免验证，里面会验证身份
-        return new StandardParser(PUT).setSession(session).parseResponse(requestObject);
+        return new StandardParser(RequestMethod.PUT).setSession(session).parseResponse(requestObject);
     }
 }

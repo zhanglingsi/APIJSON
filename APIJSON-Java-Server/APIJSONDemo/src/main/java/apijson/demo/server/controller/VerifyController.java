@@ -5,17 +5,16 @@ import apijson.demo.server.common.UtilConstants;
 import apijson.demo.server.model.Verify;
 import apijson.demo.server.utils.ControllerUtils;
 import com.alibaba.fastjson.JSONObject;
+import com.zhangls.apijson.base.JsonApi;
+import com.zhangls.apijson.base.JsonApiRequest;
+import com.zhangls.apijson.base.JsonApiResponse;
+import com.zhangls.apijson.base.model.RequestMethod;
+import com.zhangls.apijson.utils.StringUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import zuo.biao.apijson.JSON;
-import zuo.biao.apijson.JSONResponse;
-import zuo.biao.apijson.StringUtil;
-import zuo.biao.apijson.server.JSONRequest;
 
 import java.util.Random;
-
-import static zuo.biao.apijson.RequestMethod.*;
 
 /**
  * Created by zhangls on 2019/1/2.
@@ -43,9 +42,9 @@ public class VerifyController {
             return StandardParser.extendErrorResult(requestObject, e);
         }
 
-        new StandardParser(DELETE, true).parse(newVerifyRequest(type, phone, null));
+        new StandardParser(RequestMethod.DELETE, true).parse(newVerifyRequest(type, phone, null));
 
-        JSONObject response = new StandardParser(POST, true).parseResponse(
+        JSONObject response = new StandardParser(RequestMethod.POST, true).parseResponse(
                 newVerifyRequest(type, phone, "" + (new Random().nextInt(9999) + 1000))
         );
 
@@ -55,8 +54,8 @@ public class VerifyController {
         } catch (Exception e) {
         }
 
-        if (verify == null || JSONResponse.isSuccess(verify.getIntValue(JSONResponse.KEY_CODE)) == false) {
-            new StandardParser(DELETE, true).parseResponse(new JSONRequest(new Verify(type, phone)));
+        if (verify == null || JsonApiResponse.isSuccess(verify.getIntValue(JsonApiResponse.KEY_CODE)) == false) {
+            new StandardParser(RequestMethod.DELETE, true).parseResponse(new JsonApiRequest(new Verify(type, phone)));
             return response;
         }
 
@@ -64,7 +63,7 @@ public class VerifyController {
         JSONObject object = new JSONObject();
         object.put(UtilConstants.Login.TYPE, type);
         object.put(UtilConstants.Reset.PHONE, phone);
-        return getVerify(JSON.toJSONString(object));
+        return getVerify(JsonApi.toJSONString(object));
     }
 
     /**
@@ -85,7 +84,7 @@ public class VerifyController {
         } catch (Exception e) {
             return StandardParser.extendErrorResult(requestObject, e);
         }
-        return new StandardParser(GETS, true).parseResponse(newVerifyRequest(type, phone, null));
+        return new StandardParser(RequestMethod.GETS, true).parseResponse(newVerifyRequest(type, phone, null));
     }
 
     /**
@@ -119,7 +118,7 @@ public class VerifyController {
      * @param verify
      * @return
      */
-    private zuo.biao.apijson.JSONRequest newVerifyRequest(int type, String phone, String verify) {
-        return new JSONRequest(new Verify(type, phone).setVerify(verify)).setTag(UtilConstants.Public.VERIFY_).setFormat(true);
+    private JsonApiRequest newVerifyRequest(int type, String phone, String verify) {
+        return new JsonApiRequest(new Verify(type, phone).setVerify(verify)).setTag(UtilConstants.Public.VERIFY_).setFormat(true);
     }
 }

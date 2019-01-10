@@ -7,15 +7,13 @@ import apijson.demo.server.model.User;
 import apijson.demo.server.model.Verify;
 import apijson.demo.server.utils.ControllerUtils;
 import com.alibaba.fastjson.JSONObject;
+import com.zhangls.apijson.base.JsonApiRequest;
+import com.zhangls.apijson.base.JsonApiResponse;
+import com.zhangls.apijson.base.exception.ConditionErrorException;
+import com.zhangls.apijson.base.model.RequestMethod;
+import com.zhangls.apijson.utils.StringUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import zuo.biao.apijson.JSONResponse;
-import zuo.biao.apijson.StringUtil;
-import zuo.biao.apijson.server.JSONRequest;
-import zuo.biao.apijson.server.exception.ConditionErrorException;
-
-import static zuo.biao.apijson.RequestMethod.DELETE;
-import static zuo.biao.apijson.RequestMethod.POST;
 
 /**
  * Created by zhangls on 2019/1/2.
@@ -89,23 +87,23 @@ public class RegisterController {
         }
 
 
-        JSONResponse response = new JSONResponse(ControllerUtils.headVerify(Verify.TYPE_REGISTER, phone, verify));
-        if (JSONResponse.isSuccess(response) == false) {
+        JsonApiResponse response = new JsonApiResponse(ControllerUtils.headVerify(Verify.TYPE_REGISTER, phone, verify));
+        if (JsonApiResponse.isSuccess(response) == false) {
             return response;
         }
         //手机号或验证码错误
-        if (JSONResponse.isExist(response.getJSONResponse(VERIFY_)) == false) {
+        if (JsonApiResponse.isExist(response.getJSONResponse(VERIFY_)) == false) {
             return StandardParser.extendErrorResult(response, new ConditionErrorException("手机号或验证码错误！"));
         }
 
 
         //生成User和Privacy
-        if (StringUtil.isEmpty(requestObject.getString(JSONRequest.KEY_TAG), true)) {
-            requestObject.put(JSONRequest.KEY_TAG, REGISTER);
+        if (StringUtil.isEmpty(requestObject.getString(JsonApiRequest.KEY_TAG), true)) {
+            requestObject.put(JsonApiRequest.KEY_TAG, REGISTER);
         }
-        requestObject.put(JSONRequest.KEY_FORMAT, true);
-        response = new JSONResponse(
-                new StandardParser(POST).setNoVerifyLogin(true).parseResponse(requestObject)
+        requestObject.put(JsonApiRequest.KEY_FORMAT, true);
+        response = new JsonApiResponse(
+                new StandardParser(RequestMethod.POST).setNoVerifyLogin(true).parseResponse(requestObject)
         );
 
         //验证User和Privacy
@@ -119,11 +117,11 @@ public class RegisterController {
         }
 
         if (e != null) { //出现错误，回退
-            new StandardParser(DELETE, true).parseResponse(
-                    new JSONRequest(new User(userId))
+            new StandardParser(RequestMethod.DELETE, true).parseResponse(
+                    new JsonApiRequest(new User(userId))
             );
-            new StandardParser(DELETE, true).parseResponse(
-                    new JSONRequest(new Privacy(userId2))
+            new StandardParser(RequestMethod.DELETE, true).parseResponse(
+                    new JsonApiRequest(new Privacy(userId2))
             );
         }
 

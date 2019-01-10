@@ -4,11 +4,11 @@ import apijson.demo.server.model.Privacy;
 import apijson.demo.server.model.Product;
 import apijson.demo.server.model.User;
 import com.alibaba.fastjson.JSONObject;
-import zuo.biao.apijson.RequestMethod;
-import zuo.biao.apijson.StringUtil;
-import zuo.biao.apijson.server.AbstractSQLConfig;
-import zuo.biao.apijson.server.Join;
-import zuo.biao.apijson.server.SQLConfig;
+import com.zhangls.apijson.base.model.RequestMethod;
+import com.zhangls.apijson.base.service.SqlConfig;
+import com.zhangls.apijson.base.service.impl.AbstractSQLConfig;
+import com.zhangls.apijson.base.service.impl.Join;
+import com.zhangls.apijson.utils.StringUtil;
 
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class StandardSqlConfig extends AbstractSQLConfig {
      * @return
      * @throws Exception
      */
-    public static SQLConfig newSQLConfig(RequestMethod method, String table, JSONObject request, List<Join> joinList) throws Exception {
+    public static SqlConfig newSQLConfig(RequestMethod method, String table, JSONObject request, List<Join> joinList) throws Exception {
         return newSQLConfig(method, table, request, joinList, new Callback() {
 
             @Override

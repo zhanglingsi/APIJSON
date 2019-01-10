@@ -6,9 +6,8 @@ import apijson.demo.server.service.LoginNewService;
 import apijson.demo.server.utils.JsonParseUtils;
 import apijson.demo.server.utils.JwtUtils;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.zhangls.apijson.base.JsonResponse;
+import com.zhangls.apijson.base.JsonApiResponse;
 import com.zhangls.apijson.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ import java.util.Map;
  * </pre>
  */
 @Slf4j
-@RestController
+//@RestController
 public class LoginNewController {
 
     @Autowired
@@ -94,36 +93,14 @@ public class LoginNewController {
         }
 
         // 3. 请求Service返回结果(JSONObject对象) ,验证成功 返回token串
-//        JsonResponse response = service.loginNewJson(reqParse);
+        JsonApiResponse response = service.loginNewJson(reqParse);
 
         Map<String,Object> userInfo = Maps.newHashMap();
         userInfo.put("userId", "1001");
         userInfo.put("roleId", "2001");
 
         JSONObject object = new JSONObject();
-        object.put("token", JwtUtils.createToken(userInfo));
-
-        // 4. 设置登陆会话Session
-        //用户id
-//        session.setAttribute(UtilConstants.Login.USER_ID, userId);
-//        //登录方式
-//        session.setAttribute(UtilConstants.Login.TYPE, isPassword ? UtilConstants.Login.LOGIN_TYPE_PASSWORD : UtilConstants.Login.LOGIN_TYPE_VERIFY);
-//        //用户
-//        session.setAttribute(UtilConstants.Public.USER_, user);
-//        //用户隐私信息
-//        session.setAttribute(UtilConstants.Public.PRIVACY_, privacy);
-//        //记住登录
-//        session.setAttribute(UtilConstants.Login.REMEMBER, remember);
-//        //全局默认版本号
-//        session.setAttribute(UtilConstants.Login.VERSION, version);
-//        //全局默认格式化配置
-//        session.setAttribute(UtilConstants.Login.FORMAT, format);
-//
-//        //设置session过期时间
-//        session.setMaxInactiveInterval(60 * 60 * 24 * (remember ? 7 : 1));
-//
-//        response.put(UtilConstants.Login.REMEMBER, remember);
-
+        object.put("token", JwtUtils.createJwt(userInfo,"{}",2));
 
         log.info("#################登陆结束##########################################################################");
         return object.toJSONString();

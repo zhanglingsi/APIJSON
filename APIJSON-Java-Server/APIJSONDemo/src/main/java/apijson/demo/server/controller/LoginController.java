@@ -8,18 +8,18 @@ import apijson.demo.server.model.User;
 import apijson.demo.server.model.Verify;
 import apijson.demo.server.utils.ControllerUtils;
 import com.alibaba.fastjson.JSONObject;
+import com.zhangls.apijson.base.JsonApiRequest;
+import com.zhangls.apijson.base.JsonApiResponse;
+import com.zhangls.apijson.base.exception.ConditionErrorException;
+import com.zhangls.apijson.base.exception.NotExistException;
+import com.zhangls.apijson.utils.StringUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import zuo.biao.apijson.JSONResponse;
-import zuo.biao.apijson.StringUtil;
-import zuo.biao.apijson.server.JSONRequest;
-import zuo.biao.apijson.server.exception.ConditionErrorException;
-import zuo.biao.apijson.server.exception.NotExistException;
 
 import javax.servlet.http.HttpSession;
-import static zuo.biao.apijson.RequestMethod.GETS;
-import static zuo.biao.apijson.RequestMethod.HEADS;
+import static com.zhangls.apijson.base.model.RequestMethod.GETS;
+import static com.zhangls.apijson.base.model.RequestMethod.HEADS;
 
 /**
  * Controller层的职责
@@ -115,28 +115,28 @@ public class LoginController {
         //手机号是否已注册
         //SELECT  COUNT(*)  AS COUNT  FROM `apijson`.`apijson_privacy` WHERE  (  (`phone`='13000082001')  )  LIMIT 1 OFFSET 0
         JSONObject phoneResponse = new StandardParser(HEADS, true).parseResponse(
-                new JSONRequest(
+                new JsonApiRequest(
                         new Privacy().setPhone(phone)
                 )
         );
 
-        if (!JSONResponse.isSuccess(phoneResponse)) {
-            return StandardParser.newResult(phoneResponse.getIntValue(JSONResponse.KEY_CODE), phoneResponse.getString(JSONResponse.KEY_MSG));
+        if (!JsonApiResponse.isSuccess(phoneResponse)) {
+            return StandardParser.newResult(phoneResponse.getIntValue(JsonApiResponse.KEY_CODE), phoneResponse.getString(JsonApiResponse.KEY_MSG));
         }
 
-        JSONResponse response = new JSONResponse(phoneResponse).getJSONResponse(UtilConstants.Public.PRIVACY_);
+        JsonApiResponse response = new JsonApiResponse(phoneResponse).getJSONResponse(UtilConstants.Public.PRIVACY_);
 
-        if (!JSONResponse.isExist(response)) {
+        if (!JsonApiResponse.isExist(response)) {
             return StandardParser.newErrorResult(new NotExistException("手机号未注册"));
         }
 
         //根据phone获取User
         JSONObject privacyResponse = new StandardParser(GETS, true).parseResponse(
-                new JSONRequest(
+                new JsonApiRequest(
                         new Privacy().setPhone(phone)
                 ).setFormat(true)
         );
-        response = new JSONResponse(privacyResponse);
+        response = new JsonApiResponse(privacyResponse);
 
         Privacy privacy = response == null ? null : response.getObject(Privacy.class);
         long userId = privacy == null ? 0 : BaseModel.value(privacy.getId());
@@ -146,27 +146,27 @@ public class LoginController {
 
         //校验凭证
         if (isPassword) {
-            response = new JSONResponse(
+            response = new JsonApiResponse(
                     new StandardParser(HEADS, true).parseResponse(
-                            new JSONRequest(new Privacy(userId).setPassword(password))
+                            new JsonApiRequest(new Privacy(userId).setPassword(password))
                     )
             );
         } else {//verify手机验证码登录
-            response = new JSONResponse(ControllerUtils.headVerify(Verify.TYPE_LOGIN, phone, password));
+            response = new JsonApiResponse(ControllerUtils.headVerify(Verify.TYPE_LOGIN, phone, password));
         }
 
-        if (!JSONResponse.isSuccess(response)) {
+        if (!JsonApiResponse.isSuccess(response)) {
             return response;
         }
 
         response = response.getJSONResponse(isPassword ? UtilConstants.Public.PRIVACY_ : UtilConstants.Public.VERIFY_);
-        if (JSONResponse.isExist(response) == false) {
+        if (JsonApiResponse.isExist(response) == false) {
             return StandardParser.newErrorResult(new ConditionErrorException("账号或密码错误"));
         }
 
-        response = new JSONResponse(
+        response = new JsonApiResponse(
                 new StandardParser(GETS, true).parseResponse(
-                        new JSONRequest(new User(userId)).setFormat(true)
+                        new JsonApiRequest(new User(userId)).setFormat(true)
                 )
         );
 

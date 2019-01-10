@@ -1,7 +1,7 @@
 server:
     port: 9090
     context-path: /
-    # address: 192.168.1.104
+    address: 172.18.230.86
     sessionTimeout: 30
 
 logging:
@@ -38,5 +38,8 @@ spring:
 
 mybatis:
     mapper-locations: classpath:mapper/*Mapper.xml
-    type-aliases-package: apijson.demo.server.model
+    type-aliases-package: apijson.demo.service.model
+
+
+
 

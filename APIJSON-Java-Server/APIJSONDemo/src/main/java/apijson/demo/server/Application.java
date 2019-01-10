@@ -15,7 +15,7 @@ import org.springframework.web.filter.CorsFilter;
  * @author Lemon
  */
 @SpringBootApplication
-@MapperScan("apijson.demo.server.mapper")
+@MapperScan("apijson.demo.service.mapper")
 public class Application {
 
     @Bean

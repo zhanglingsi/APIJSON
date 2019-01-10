@@ -2,8 +2,8 @@ package apijson.demo.server.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhangls.apijson.annotation.NotNull;
-import com.zhangls.apijson.base.Json;
-import com.zhangls.apijson.base.JsonResponse;
+import com.zhangls.apijson.base.JsonApi;
+import com.zhangls.apijson.base.JsonApiResponse;
 import com.zhangls.apijson.base.exception.*;
 import com.zhangls.apijson.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -53,37 +53,37 @@ public class JsonParseUtils {
 
             int code;
             if (e instanceof UnsupportedEncodingException) {
-                code = JsonResponse.CODE_UNSUPPORTED_ENCODING;
+                code = JsonApiResponse.CODE_UNSUPPORTED_ENCODING;
             } else if (e instanceof IllegalAccessException) {
-                code = JsonResponse.CODE_ILLEGAL_ACCESS;
+                code = JsonApiResponse.CODE_ILLEGAL_ACCESS;
             } else if (e instanceof UnsupportedOperationException) {
-                code = JsonResponse.CODE_UNSUPPORTED_OPERATION;
+                code = JsonApiResponse.CODE_UNSUPPORTED_OPERATION;
             } else if (e instanceof NotExistException) {
-                code = JsonResponse.CODE_NOT_FOUND;
+                code = JsonApiResponse.CODE_NOT_FOUND;
             } else if (e instanceof IllegalArgumentException) {
-                code = JsonResponse.CODE_ILLEGAL_ARGUMENT;
+                code = JsonApiResponse.CODE_ILLEGAL_ARGUMENT;
             } else if (e instanceof NotLoggedInException) {
-                code = JsonResponse.CODE_NOT_LOGGED_IN;
+                code = JsonApiResponse.CODE_NOT_LOGGED_IN;
             } else if (e instanceof TimeoutException) {
-                code = JsonResponse.CODE_TIME_OUT;
+                code = JsonApiResponse.CODE_TIME_OUT;
             } else if (e instanceof ConflictException) {
-                code = JsonResponse.CODE_CONFLICT;
+                code = JsonApiResponse.CODE_CONFLICT;
             } else if (e instanceof ConditionErrorException) {
-                code = JsonResponse.CODE_CONDITION_ERROR;
+                code = JsonApiResponse.CODE_CONDITION_ERROR;
             } else if (e instanceof UnsupportedDataTypeException) {
-                code = JsonResponse.CODE_UNSUPPORTED_TYPE;
+                code = JsonApiResponse.CODE_UNSUPPORTED_TYPE;
             } else if (e instanceof OutOfRangeException) {
-                code = JsonResponse.CODE_OUT_OF_RANGE;
+                code = JsonApiResponse.CODE_OUT_OF_RANGE;
             } else if (e instanceof NullPointerException) {
-                code = JsonResponse.CODE_NULL_POINTER;
+                code = JsonApiResponse.CODE_NULL_POINTER;
             } else {
-                code = JsonResponse.CODE_SERVER_ERROR;
+                code = JsonApiResponse.CODE_SERVER_ERROR;
             }
 
             return newResult(code, e.getMessage());
         }
 
-        return newResult(JsonResponse.CODE_SERVER_ERROR, JsonResponse.MSG_SERVER_ERROR);
+        return newResult(JsonApiResponse.CODE_SERVER_ERROR, JsonApiResponse.MSG_SERVER_ERROR);
     }
 
     /**
@@ -109,14 +109,14 @@ public class JsonParseUtils {
         if (object == null) {
             object = new JSONObject(true);
         }
-        if (!object.containsKey(JsonResponse.KEY_CODE)) {
-            object.put(JsonResponse.KEY_CODE, code);
+        if (!object.containsKey(JsonApiResponse.KEY_CODE)) {
+            object.put(JsonApiResponse.KEY_CODE, code);
         }
-        String m = StringUtil.getString(object.getString(JsonResponse.KEY_MSG));
+        String m = StringUtil.getString(object.getString(JsonApiResponse.KEY_MSG));
         if (!m.isEmpty()) {
             msg = m + " ;\n " + StringUtil.getString(msg);
         }
-        object.put(JsonResponse.KEY_MSG, msg);
+        object.put(JsonApiResponse.KEY_MSG, msg);
 
         return object;
     }
@@ -129,7 +129,7 @@ public class JsonParseUtils {
      * @return
      */
     public static JSONObject extendSuccessResult(JSONObject object) {
-        return extendResult(object, JsonResponse.CODE_SUCCESS, JsonResponse.MSG_SUCCEED);
+        return extendResult(object, JsonApiResponse.CODE_SUCCESS, JsonApiResponse.MSG_SUCCEED);
     }
 
     /**
@@ -138,7 +138,7 @@ public class JsonParseUtils {
      * @return
      */
     public static JSONObject newSuccessResult() {
-        return newResult(JsonResponse.CODE_SUCCESS, JsonResponse.MSG_SUCCEED);
+        return newResult(JsonApiResponse.CODE_SUCCESS, JsonApiResponse.MSG_SUCCEED);
     }
 
     /**
@@ -149,7 +149,7 @@ public class JsonParseUtils {
      */
     public static JSONObject extendErrorResult(JSONObject object, Exception e) {
         JSONObject error = newErrorResult(e);
-        return extendResult(object, error.getIntValue(JsonResponse.KEY_CODE), error.getString(JsonResponse.KEY_MSG));
+        return extendResult(object, error.getIntValue(JsonApiResponse.KEY_CODE), error.getString(JsonApiResponse.KEY_MSG));
     }
 
     /**
@@ -161,7 +161,7 @@ public class JsonParseUtils {
      */
     @NotNull
     public static JSONObject parseRequest(String request) throws Exception {
-        JSONObject obj = Json.parseObject(request);
+        JSONObject obj = JsonApi.parseObject(request);
         if (obj == null) {
             throw new UnsupportedEncodingException("【JSON格式不合法！】");
         }

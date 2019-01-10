@@ -3,7 +3,7 @@ package apijson.demo.server.common;
 import apijson.demo.server.model.Privacy;
 import apijson.demo.server.model.User;
 import apijson.demo.server.model.Verify;
-import zuo.biao.apijson.server.JSONRequest;
+import com.zhangls.apijson.base.JsonApiRequest;
 
 /**
  * Created by zhangls on 2019/1/2.
@@ -26,8 +26,8 @@ public interface UtilConstants {
      * 登陆相关
      */
     class Login {
-        public static final String VERSION = JSONRequest.KEY_VERSION;
-        public static final String FORMAT = JSONRequest.KEY_FORMAT;
+        public static final String VERSION = JsonApiRequest.KEY_VERSION;
+        public static final String FORMAT = JsonApiRequest.KEY_FORMAT;
         public static final String USER_ID = "userId";
         public static final String PHONE = "phone";
         public static final String PASS_WORD = "password";
@@ -73,8 +73,8 @@ public interface UtilConstants {
     }
 
     class Jwt {
-        public static final String JWT_KEY = "secretkey";
-        public static final String JWT_BEARER = "Beater";
+        public static final String JWT_KEY = "7786df7fc3a34e26a61c034d5ec8245d";
+        public static final String JWT_BEARER = "cIjpcIjEwMDFcIixcInJ";
         public static final String JWT_AUTHOR = "Authorization";
         public static final String JWT_ID = "jwtId";
         public static final String JWT_USER_INFO = "jwtUserInfo";

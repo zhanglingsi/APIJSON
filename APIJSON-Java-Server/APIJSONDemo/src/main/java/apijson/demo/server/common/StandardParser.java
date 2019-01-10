@@ -2,10 +2,10 @@ package apijson.demo.server.common;
 
 import apijson.demo.server.test.DemoFunction;
 import com.alibaba.fastjson.JSONObject;
-import zuo.biao.apijson.RequestMethod;
-import zuo.biao.apijson.server.AbstractParser;
-import zuo.biao.apijson.server.JSONRequest;
-import zuo.biao.apijson.server.SQLConfig;
+import com.zhangls.apijson.base.JsonApiRequest;
+import com.zhangls.apijson.base.model.RequestMethod;
+import com.zhangls.apijson.base.service.SqlConfig;
+import com.zhangls.apijson.base.service.impl.AbstractParser;
 
 import javax.servlet.http.HttpSession;
 
@@ -59,8 +59,8 @@ public class StandardParser extends AbstractParser<Long> {
     @Override
     public JSONObject parseResponse(JSONObject request) {
         //补充format
-        if (session != null && request != null && request.get(JSONRequest.KEY_FORMAT) == null) {
-            request.put(JSONRequest.KEY_FORMAT, session.getAttribute(JSONRequest.KEY_FORMAT));
+        if (session != null && request != null && request.get(JsonApiRequest.KEY_FORMAT) == null) {
+            request.put(JsonApiRequest.KEY_FORMAT, session.getAttribute(JsonApiRequest.KEY_FORMAT));
         }
         return super.parseResponse(request);
     }
@@ -77,13 +77,13 @@ public class StandardParser extends AbstractParser<Long> {
 
 
     @Override
-    public StandardObjectParser createObjectParser(JSONObject request, String parentPath, String name, SQLConfig arrayConfig) throws Exception {
+    public StandardObjectParser createObjectParser(JSONObject request, String parentPath, String name, SqlConfig arrayConfig) throws Exception {
 
         return new StandardObjectParser(session, request, parentPath, name, arrayConfig) {
 
             //TODO 删除，onPUTArrayParse改用MySQL函数JSON_ADD, JSON_REMOVE等
             @Override
-            public JSONObject parseResponse(JSONRequest request) throws Exception {
+            public JSONObject parseResponse(JsonApiRequest request) throws Exception {
                 StandardParser demoParser = new StandardParser(RequestMethod.GET);
                 demoParser.setSession(session);
                 //parser.setNoVerifyRequest(noVerifyRequest)
@@ -98,8 +98,8 @@ public class StandardParser extends AbstractParser<Long> {
     @Override
     protected void onVerifyContent() throws Exception {
         //补充全局缺省版本号  //可能在默认为1的前提下这个请求version就需要为0  requestObject.getIntValue(JSONRequest.KEY_VERSION) <= 0) {
-        if (session != null && requestObject.get(JSONRequest.KEY_VERSION) == null) {
-            requestObject.put(JSONRequest.KEY_VERSION, session.getAttribute(JSONRequest.KEY_VERSION));
+        if (session != null && requestObject.get(JsonApiRequest.KEY_VERSION) == null) {
+            requestObject.put(JsonApiRequest.KEY_VERSION, session.getAttribute(JsonApiRequest.KEY_VERSION));
         }
         super.onVerifyContent();
     }

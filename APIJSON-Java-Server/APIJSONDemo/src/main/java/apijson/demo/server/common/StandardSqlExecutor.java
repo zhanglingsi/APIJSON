@@ -1,10 +1,9 @@
 package apijson.demo.server.common;
 
 import com.google.common.collect.Maps;
+import com.zhangls.apijson.base.service.SqlConfig;
+import com.zhangls.apijson.base.service.impl.AbstractSQLExecutor;
 import lombok.extern.slf4j.Slf4j;
-import zuo.biao.apijson.Log;
-import zuo.biao.apijson.server.AbstractSQLExecutor;
-import zuo.biao.apijson.server.SQLConfig;
 
 import javax.validation.constraints.NotNull;
 import java.sql.*;
@@ -43,12 +42,12 @@ public class StandardSqlExecutor extends AbstractSQLExecutor {
 
 
     @Override
-    public ResultSet executeQuery(@NotNull SQLConfig config) throws Exception {
+    public ResultSet executeQuery(@NotNull SqlConfig config) throws Exception {
         return getStatement(config).executeQuery();
     }
 
     @Override
-    public int executeUpdate(@NotNull SQLConfig config) throws Exception {
+    public int executeUpdate(@NotNull SqlConfig config) throws Exception {
         return getStatement(config).executeUpdate();
     }
 
@@ -62,7 +61,7 @@ public class StandardSqlExecutor extends AbstractSQLExecutor {
      * @throws Exception
      */
     @SuppressWarnings("resource")
-    private PreparedStatement getStatement(@NotNull SQLConfig config) throws Exception {
+    private PreparedStatement getStatement(@NotNull SqlConfig config) throws Exception {
         Connection connection = connectionMap.get(config.getDatabase());
 
         if (connection == null || connection.isClosed()) {

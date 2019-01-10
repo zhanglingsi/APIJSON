@@ -1,6 +1,7 @@
 package com.zhangls.apijson.base.model;
 
-import zuo.biao.apijson.StringUtil;
+
+import com.zhangls.apijson.utils.StringUtil;
 
 /**
  * 来访的用户角色

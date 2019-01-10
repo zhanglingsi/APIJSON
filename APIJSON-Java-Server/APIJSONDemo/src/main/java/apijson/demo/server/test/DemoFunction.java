@@ -1,17 +1,3 @@
-/*Copyright ©2016 TommyLemon(https://github.com/TommyLemon/APIJSON)
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.*/
-
 package apijson.demo.server.test;
 
 import java.util.ArrayList;
@@ -27,20 +13,22 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import apijson.demo.server.model.BaseModel;
-import zuo.biao.apijson.JSON;
-import zuo.biao.apijson.JSONResponse;
-import zuo.biao.apijson.Log;
-import zuo.biao.apijson.NotNull;
-import zuo.biao.apijson.RequestMethod;
-import zuo.biao.apijson.RequestRole;
-import zuo.biao.apijson.StringUtil;
-import zuo.biao.apijson.server.JSONRequest;
-import zuo.biao.apijson.server.RemoteFunction;
+import com.zhangls.apijson.annotation.NotNull;
+import com.zhangls.apijson.base.JsonApi;
+import com.zhangls.apijson.base.JsonApiObject;
+import com.zhangls.apijson.base.JsonApiRequest;
+import com.zhangls.apijson.base.JsonApiResponse;
+import com.zhangls.apijson.base.model.RequestMethod;
+import com.zhangls.apijson.base.model.RequestRole;
+import com.zhangls.apijson.base.service.impl.RemoteFunction;
+import com.zhangls.apijson.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**可远程调用的函数类
  * @author Lemon
  */
+@Slf4j
 public class DemoFunction extends RemoteFunction {
 	private static final String TAG = "DemoFunction";
 
@@ -53,7 +41,7 @@ public class DemoFunction extends RemoteFunction {
 
 	public static void test() throws Exception {
 		int i0 = 1, i1 = -2;
-		JSONObject request = new JSONObject(); 
+		JSONObject request = new JSONObject();
 		request.put("id", 10);
 		request.put("i0", i0);
 		request.put("i1", i1);
@@ -62,10 +50,10 @@ public class DemoFunction extends RemoteFunction {
 		request.put("arr", arr);
 
 		JSONArray array = new JSONArray();
-		array.add(1);//new JSONObject());
-		array.add(2);//new JSONObject());
-		array.add(4);//new JSONObject());
-		array.add(10);//new JSONObject());
+		array.add(1);
+		array.add(2);
+		array.add(4);
+		array.add(10);
 		request.put("array", array);
 
 		request.put("position", 1);
@@ -77,11 +65,11 @@ public class DemoFunction extends RemoteFunction {
 		request.put("object", object);
 
 
-		Log.i(TAG, "plus(1,-2) = " + new DemoFunction(null, null).invoke("plus(i0,i1)", request));
-		Log.i(TAG, "count([1,2,4,10]) = " + new DemoFunction(null, null).invoke("countArray(array)", request));
-		Log.i(TAG, "isContain([1,2,4,10], 10) = " + new DemoFunction(null, null).invoke("isContain(array,id)", request));
-		Log.i(TAG, "getFromArray([1,2,4,10], 0) = " + new DemoFunction(null, null).invoke("getFromArray(array,@position)", request));
-		Log.i(TAG, "getFromObject({key:true}, key) = " + new DemoFunction(null, null).invoke("getFromObject(object,key)", request));
+		log.info(TAG, "plus(1,-2) = " + new DemoFunction(null, null).invoke("plus(i0,i1)", request));
+		log.info(TAG, "count([1,2,4,10]) = " + new DemoFunction(null, null).invoke("countArray(array)", request));
+		log.info(TAG, "isContain([1,2,4,10], 10) = " + new DemoFunction(null, null).invoke("isContain(array,id)", request));
+		log.info(TAG, "getFromArray([1,2,4,10], 0) = " + new DemoFunction(null, null).invoke("getFromArray(array,@position)", request));
+		log.info(TAG, "getFromObject({key:true}, key) = " + new DemoFunction(null, null).invoke("getFromObject(object,key)", request));
 
 		forceUseable();
 	}
@@ -91,13 +79,13 @@ public class DemoFunction extends RemoteFunction {
 	public static void forceUseable() { // throws UnsupportedOperationException {
 		//查出所有的 Function 并校验是否已在应用层代码实现
 
-		JSONObject request = new JSONObject(); 
+		JSONObject request = new JSONObject();
 
 		//Function[]<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-		JSONRequest functionItem = new JSONRequest();
+		JsonApiRequest functionItem = new JsonApiRequest();
 
 		//Function<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-		JSONRequest function = new JSONRequest();
+		JsonApiRequest function = new JsonApiRequest();
 		functionItem.put("Function", function);
 		//Function>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -105,14 +93,14 @@ public class DemoFunction extends RemoteFunction {
 		//Function[]>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 		JSONObject response = new StandardParser(RequestMethod.GET, true).parseResponse(request);
-		if (JSONResponse.isSuccess(response) == false) {
-			Log.e(TAG, "\n\n\n\n\n !!!! 查询远程函数异常 !!!\n" + response.getString(JSONResponse.KEY_MSG) + "\n\n\n\n\n");
+		if (JsonApiResponse.isSuccess(response) == false) {
+			log.error(TAG, "\n\n\n\n\n !!!! 查询远程函数异常 !!!\n" + response.getString(JsonApiResponse.KEY_MSG) + "\n\n\n\n\n");
 			return;
 		}
-		
+
 		JSONArray fl = response.getJSONArray("Function[]");
 		if (fl == null || fl.isEmpty()) {
-			Log.d(TAG, "没有可用的远程函数");
+			log.debug(TAG, "没有可用的远程函数");
 			return;
 		}
 
@@ -123,27 +111,27 @@ public class DemoFunction extends RemoteFunction {
 				continue;
 			}
 
-			JSONObject demo = JSON.parseObject(fi.getString("demo"));
+			JSONObject demo = JsonApi.parseObject(fi.getString("demo"));
 			if (demo == null) {
 				exitWithError("字段 demo 的值必须为合法且非null的 JSONObejct 字符串！");
 			}
 			if (demo.containsKey("result()") == false) {
 				demo.put("result()", getFunctionCall(fi.getString("name"), fi.getString("arguments")));
 			}
-			demo.put(JSONRequest.KEY_COLUMN, "id,name,arguments,demo");
+			demo.put(JsonApiRequest.KEY_COLUMN, "id,name,arguments,demo");
 
 			JSONObject r = new StandardParser(RequestMethod.GET, true).parseResponse(demo);
-			if (JSONResponse.isSuccess(r) == false) {
+			if (JsonApiResponse.isSuccess(r) == false) {
 				//				throw new UnsupportedOperationException("远程函数测试未通过！请修改 Function 表里的 demo！原因：" + JSONResponse.getMsg(r));
-				exitWithError(JSONResponse.getMsg(r));
+				exitWithError(JsonApiResponse.getMsg(r));
 			}
 		}
 	}
 
 
 	private static void exitWithError(String msg) {
-		Log.e(TAG, "\n远程函数文档测试未通过！\n请新增 demo 里的函数，或修改 Function 表里的 demo 为已有的函数示例！\n保证前端看到的远程函数文档是正确的！！！\n\n原因：\n" + msg);
-		System.exit(1);		
+		log.error(TAG, "\n远程函数文档测试未通过！\n请新增 demo 里的函数，或修改 Function 表里的 demo 为已有的函数示例！\n保证前端看到的远程函数文档是正确的！！！\n\n原因：\n" + msg);
+		System.exit(1);
 	}
 
 	/**反射调用
@@ -199,8 +187,8 @@ public class DemoFunction extends RemoteFunction {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * @param rq
 	 * @param momentId
@@ -211,27 +199,27 @@ public class DemoFunction extends RemoteFunction {
 		if (method != RequestMethod.DELETE) {
 			throw new UnsupportedOperationException("远程函数 deleteCommentOfMoment 只支持 DELETE 方法！");
 		}
-		
+
 		long mid = rq.getLongValue(momentId);
-		if (mid <= 0 || rq.getIntValue(JSONResponse.KEY_COUNT) <= 0) {
+		if (mid <= 0 || rq.getIntValue(JsonApiResponse.KEY_COUNT) <= 0) {
 			return 0;
 		}
 
-		JSONRequest request = new JSONRequest();
+		JsonApiRequest request = new JsonApiRequest();
 
 		//Comment<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-		JSONRequest comment = new JSONRequest();
+		JsonApiRequest comment = new JsonApiRequest();
 		comment.put("momentId", mid);
-		
+
 		request.put("Comment", comment);
 		//Comment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 		JSONObject rp = new StandardParser(RequestMethod.DELETE).setNoVerify(true).parseResponse(request);
 
 		JSONObject c = rp.getJSONObject("Comment");
-		return c == null ? 0 : c.getIntValue(JSONResponse.KEY_COUNT);
+		return c == null ? 0 : c.getIntValue(JsonApiResponse.KEY_COUNT);
 	}
-	
+
 
 	/**删除评论的子评论
 	 * @param rq
@@ -242,18 +230,18 @@ public class DemoFunction extends RemoteFunction {
 		if (method != RequestMethod.DELETE) { //TODO 如果这样的判断太多，可以把 DemoFunction 分成对应不同 RequestMethod 的 GetFunciton 等，创建时根据 method 判断用哪个
 			throw new UnsupportedOperationException("远程函数 deleteChildComment 只支持 DELETE 方法！");
 		}
-		
+
 		long tid = rq.getLongValue(toId);
-		if (tid <= 0 || rq.getIntValue(JSONResponse.KEY_COUNT) <= 0) {
+		if (tid <= 0 || rq.getIntValue(JsonApiResponse.KEY_COUNT) <= 0) {
 			return 0;
 		}
 
 		//递归获取到全部子评论id
 
-		JSONRequest request = new JSONRequest();
+		JsonApiRequest request = new JsonApiRequest();
 
 		//Comment<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-		JSONRequest comment = new JSONRequest();
+		JsonApiRequest comment = new JsonApiRequest();
 		comment.put("id{}", getChildCommentIdList(tid));
 
 		request.put("Comment", comment);
@@ -262,7 +250,7 @@ public class DemoFunction extends RemoteFunction {
 		JSONObject rp = new StandardParser(RequestMethod.DELETE).setNoVerify(true).parseResponse(request);
 
 		JSONObject c = rp.getJSONObject("Comment");
-		return c == null ? 0 : c.getIntValue(JSONResponse.KEY_COUNT);
+		return c == null ? 0 : c.getIntValue(JsonApiResponse.KEY_COUNT);
 	}
 
 
@@ -270,13 +258,13 @@ public class DemoFunction extends RemoteFunction {
 
 		JSONArray arr = new JSONArray();
 
-		JSONRequest request = new JSONRequest();
+		JsonApiRequest request = new JsonApiRequest();
 
 		//Comment-id[]<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-		JSONRequest idItem = new JSONRequest();
+		JsonApiRequest idItem = new JsonApiRequest();
 
 		//Comment<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-		JSONRequest comment = new JSONRequest();
+		JsonApiRequest comment = new JsonApiRequest();
 		comment.put("toId", tid);
 		comment.setColumn("id");
 		idItem.put("Comment", comment);
@@ -309,7 +297,7 @@ public class DemoFunction extends RemoteFunction {
 	 * @return
 	 */
 	public JSONObject getFunctionDemo(@NotNull JSONObject request) {
-		JSONObject demo = JSON.parseObject(request.getString("demo"));
+		JSONObject demo = JsonApi.parseObject(request.getString("demo"));
 		if (demo == null) {
 			exitWithError("字段 demo 的值必须为合法且非null的 JSONObejct 字符串！");
 		}
@@ -352,8 +340,8 @@ public class DemoFunction extends RemoteFunction {
 	 * @throws Exception
 	 */
 	public Object verifyAccess(@NotNull JSONObject request) throws Exception {
-		long userId = request.getLongValue(zuo.biao.apijson.JSONObject.KEY_USER_ID);
-		RequestRole role = RequestRole.get(request.getString(zuo.biao.apijson.JSONObject.KEY_ROLE));
+		long userId = request.getLongValue(JsonApiObject.KEY_USER_ID);
+		RequestRole role = RequestRole.get(request.getString(JsonApiObject.KEY_ROLE));
 		if (role == RequestRole.OWNER && userId != StandardVerifier.getVisitorId(session)) {
 			throw new IllegalAccessException("登录用户与角色OWNER不匹配！");
 		}
@@ -391,7 +379,7 @@ public class DemoFunction extends RemoteFunction {
 	 * @return
 	 */
 	public boolean isObjectEmpty(@NotNull JSONObject request, String object) {
-		return BaseModel.isEmpty(request.getJSONObject(object)); 
+		return BaseModel.isEmpty(request.getJSONObject(object));
 	}
 	//判断是否为空 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -416,8 +404,8 @@ public class DemoFunction extends RemoteFunction {
 	 * @param key
 	 * @return
 	 */
-	public boolean isContainKey(@NotNull JSONObject request, String object, String key) { 
-		return BaseModel.isContainKey(request.getJSONObject(object), request.getString(key)); 
+	public boolean isContainKey(@NotNull JSONObject request, String object, String key) {
+		return BaseModel.isContainKey(request.getJSONObject(object), request.getString(key));
 	}
 	/**判断object是否包含value
 	 * @param request
@@ -425,7 +413,7 @@ public class DemoFunction extends RemoteFunction {
 	 * @param value
 	 * @return
 	 */
-	public boolean isContainValue(@NotNull JSONObject request, String object, String value) { 
+	public boolean isContainValue(@NotNull JSONObject request, String object, String value) {
 		return BaseModel.isContainValue(request.getJSONObject(object), request.get(value));
 	}
 	//判断是否为包含 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -437,8 +425,8 @@ public class DemoFunction extends RemoteFunction {
 	 * @param array
 	 * @return
 	 */
-	public int countArray(@NotNull JSONObject request, String array) { 
-		return BaseModel.count(request.getJSONArray(array)); 
+	public int countArray(@NotNull JSONObject request, String array) {
+		return BaseModel.count(request.getJSONArray(array));
 	}
 	/**获取数量
 	 * @param request
@@ -446,7 +434,7 @@ public class DemoFunction extends RemoteFunction {
 	 * @return
 	 */
 	public int countObject(@NotNull JSONObject request, String object) {
-		return BaseModel.count(request.getJSONObject(object)); 
+		return BaseModel.count(request.getJSONObject(object));
 	}
 	//获取集合长度 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -465,7 +453,7 @@ public class DemoFunction extends RemoteFunction {
 		} catch (Exception e) {
 			p = request.getIntValue(position);
 		}
-		return BaseModel.get(request.getJSONArray(array), p); 
+		return BaseModel.get(request.getJSONArray(array), p);
 	}
 	/**获取
 	 * @param request
@@ -473,7 +461,7 @@ public class DemoFunction extends RemoteFunction {
 	 * @param key
 	 * @return
 	 */
-	public Object getFromObject(@NotNull JSONObject request, String object, String key) { 
+	public Object getFromObject(@NotNull JSONObject request, String object, String key) {
 		return BaseModel.get(request.getJSONObject(object), request.getString(key));
 	}
 	//根据键获取值 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -481,7 +469,6 @@ public class DemoFunction extends RemoteFunction {
 	//根据键移除值 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	/**移除
 	 ** @param request
-	 * @param array
 	 * @param position 支持直接传数字，例如 getFromArray(array,0) ；或者引用当前对象的值，例如 "@position": 0, "result()": "getFromArray(array,@position)"
 	 * @return
 	 */
@@ -492,16 +479,15 @@ public class DemoFunction extends RemoteFunction {
 		} catch (Exception e) {
 			p = request.getIntValue(position);
 		}
-		request.remove(p); 
+		request.remove(p);
 		return null;
 	}
 	/**移除
 	 * @param request
-	 * @param object
 	 * @param key
 	 * @return
 	 */
-	public Object removeKey(@NotNull JSONObject request, String key) { 
+	public Object removeKey(@NotNull JSONObject request, String key) {
 		request.remove(key);
 		return null;
 	}
@@ -515,7 +501,7 @@ public class DemoFunction extends RemoteFunction {
 	 * @param value
 	 * @return
 	 */
-	public boolean booleanValue(@NotNull JSONObject request, String value) { 
+	public boolean booleanValue(@NotNull JSONObject request, String value) {
 		return request.getBooleanValue(value);
 	}
 	/**获取非空值
@@ -523,7 +509,7 @@ public class DemoFunction extends RemoteFunction {
 	 * @param value
 	 * @return
 	 */
-	public int intValue(@NotNull JSONObject request, String value) {  
+	public int intValue(@NotNull JSONObject request, String value) {
 		return request.getIntValue(value);
 	}
 	/**获取非空值
@@ -531,7 +517,7 @@ public class DemoFunction extends RemoteFunction {
 	 * @param value
 	 * @return
 	 */
-	public long longValue(@NotNull JSONObject request, String value) {   
+	public long longValue(@NotNull JSONObject request, String value) {
 		return request.getLongValue(value);
 	}
 	/**获取非空值
@@ -539,7 +525,7 @@ public class DemoFunction extends RemoteFunction {
 	 * @param value
 	 * @return
 	 */
-	public float floatValue(@NotNull JSONObject request, String value) {  
+	public float floatValue(@NotNull JSONObject request, String value) {
 		return request.getFloatValue(value);
 	}
 	/**获取非空值
@@ -547,8 +533,8 @@ public class DemoFunction extends RemoteFunction {
 	 * @param value
 	 * @return
 	 */
-	public double doubleValue(@NotNull JSONObject request, String value) {    
-		return request.getDoubleValue(value); 
+	public double doubleValue(@NotNull JSONObject request, String value) {
+		return request.getDoubleValue(value);
 	}
 	//获取非基本类型对应基本类型的非空值 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -558,9 +544,9 @@ public class DemoFunction extends RemoteFunction {
 	 * @param defaultValue
 	 * @return v == null ? request.get(defaultValue) : v
 	 */
-	public Object getWithDefault(@NotNull JSONObject request, String value, String defaultValue) {    
-		Object v = request.get(value); 
-		return v == null ? request.get(defaultValue) : v; 
+	public Object getWithDefault(@NotNull JSONObject request, String value, String defaultValue) {
+		Object v = request.get(value);
+		return v == null ? request.get(defaultValue) : v;
 	}
 
 

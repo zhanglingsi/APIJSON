@@ -5,20 +5,16 @@ import apijson.demo.server.common.UtilConstants;
 import apijson.demo.server.model.BaseModel;
 import apijson.demo.server.model.Verify;
 import com.alibaba.fastjson.JSONObject;
+import com.zhangls.apijson.base.JsonApiRequest;
+import com.zhangls.apijson.base.JsonApiResponse;
+import com.zhangls.apijson.base.exception.ConditionErrorException;
+import com.zhangls.apijson.base.exception.NotExistException;
+import com.zhangls.apijson.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import zuo.biao.apijson.JSONResponse;
 import com.zhangls.apijson.base.model.RequestMethod;
-import zuo.biao.apijson.StringUtil;
-import zuo.biao.apijson.server.JSONRequest;
-import zuo.biao.apijson.server.exception.ConditionErrorException;
-import zuo.biao.apijson.server.exception.NotExistException;
 
-import javax.servlet.http.HttpSession;
 import java.util.concurrent.TimeoutException;
 
-import static zuo.biao.apijson.RequestMethod.DELETE;
-import static zuo.biao.apijson.RequestMethod.GETS;
-import static zuo.biao.apijson.RequestMethod.HEADS;
 
 /**
  * Created by zhangls on 2019/1/2.
@@ -37,9 +33,9 @@ public class ControllerUtils {
      * @author Lemon
      */
     public static JSONObject headVerify(int type, String phone, String code) {
-        JSONResponse response = new JSONResponse(
-                new StandardParser(GETS, true).parseResponse(
-                        new JSONRequest(new Verify(type, phone).setVerify(code)
+        JsonApiResponse response = new JsonApiResponse(
+                new StandardParser(RequestMethod.GETS, true).parseResponse(
+                        new JsonApiRequest(new Verify(type, phone).setVerify(code)
                         ).setTag(UtilConstants.Public.VERIFY_)
                 )
         );
@@ -53,15 +49,15 @@ public class ControllerUtils {
         long time = BaseModel.getTimeMillis(verify.getDate());
         long now = System.currentTimeMillis();
         if (now > 60 * 1000 + time) {
-            new StandardParser(DELETE, true).parseResponse(
-                    new JSONRequest(new Verify(type, phone)).setTag(UtilConstants.Public.VERIFY_)
+            new StandardParser(RequestMethod.DELETE, true).parseResponse(
+                    new JsonApiRequest(new Verify(type, phone)).setTag(UtilConstants.Public.VERIFY_)
             );
             return StandardParser.newErrorResult(new TimeoutException("验证码已过期！"));
         }
 
-        return new JSONResponse(
-                new StandardParser(HEADS, true).parseResponse(
-                        new JSONRequest(new Verify(type, phone).setVerify(code)).setFormat(true)
+        return new JsonApiResponse(
+                new StandardParser(RequestMethod.HEADS, true).parseResponse(
+                        new JsonApiRequest(new Verify(type, phone).setVerify(code)).setFormat(true)
                 )
         );
     }

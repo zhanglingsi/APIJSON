@@ -10,4 +10,13 @@
         ${value}
     </insert>
 
+    <!-- 登陆相关 -->
+    <select id="countUserByPhone" parameterType="String" resultType="Integer">
+        SELECT COUNT(*) AS COUNT FROM apijson_privacy WHERE phone=#{value} LIMIT 1 OFFSET 0
+    </select>
+
+    <select id="queryUserByPhone" parameterType="String" resultType="java.util.LinkedHashMap">
+        SELECT * FROM apijson_privacy WHERE phone=#{value} LIMIT 1 OFFSET 0;
+    </select>
+
 </mapper>

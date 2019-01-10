@@ -6,15 +6,15 @@ import apijson.demo.server.model.Privacy;
 import apijson.demo.server.model.User;
 import apijson.demo.server.model.Verify;
 import com.alibaba.fastjson.JSONObject;
+import com.zhangls.apijson.base.JsonApiResponse;
+import com.zhangls.apijson.utils.StringUtil;
 import org.springframework.web.bind.annotation.PostMapping;
-import zuo.biao.apijson.JSONResponse;
-import zuo.biao.apijson.Log;
-import zuo.biao.apijson.StringUtil;
 
 import javax.servlet.http.HttpSession;
 
 /**
  * Created by zhangls on 2019/1/2.
+ *
  * @author zhangls
  */
 public class LogoutController {
@@ -31,9 +31,10 @@ public class LogoutController {
         VERIFY_ = Verify.class.getSimpleName();
     }
 
-    public static final String COUNT = JSONResponse.KEY_COUNT;
+    public static final String COUNT = JsonApiResponse.KEY_COUNT;
 
     public static final String ID = "id";
+
     /**
      * 退出登录，清空session
      *
@@ -46,7 +47,7 @@ public class LogoutController {
         try {
             //必须在session.invalidate();前！
             userId = StandardVerifier.getVisitorId(session);
-            Log.d(TAG, "logout  userId = " + userId + "; session.getId() = " + (session == null ? null : session.getId()));
+//            Log.d(TAG, "logout  userId = " + userId + "; session.getId() = " + (session == null ? null : session.getId()));
             session.invalidate();
         } catch (Exception e) {
             return StandardParser.newErrorResult(e);

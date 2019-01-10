@@ -28,4 +28,19 @@ public interface StandardMapper {
      */
     Integer standardInsert(String sql);
 
+    /**
+     * 登陆时 查询手机是否存在
+     * @param phone
+     * @return
+     */
+    Integer countUserByPhone(String phone);
+
+
+    /**
+     * 登陆时 查询用户密码表记录
+     * @param phone
+     * @return
+     */
+    LinkedHashMap<String, Object> queryUserByPhone(String phone);
+
 }

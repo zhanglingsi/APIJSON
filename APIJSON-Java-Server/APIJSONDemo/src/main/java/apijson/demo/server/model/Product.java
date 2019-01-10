@@ -1,7 +1,9 @@
 package apijson.demo.server.model;
 
-import zuo.biao.apijson.MethodAccess;
-import static zuo.biao.apijson.RequestRole.*;
+import com.zhangls.apijson.annotation.MethodAccess;
+
+import static com.zhangls.apijson.base.model.RequestRole.ADMIN;
+import static com.zhangls.apijson.base.model.RequestRole.UNKNOWN;
 
 /**
  * Created by zhangls on 2019/1/3.

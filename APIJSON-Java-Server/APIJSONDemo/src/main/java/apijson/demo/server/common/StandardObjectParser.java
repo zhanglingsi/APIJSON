@@ -1,11 +1,11 @@
 package apijson.demo.server.common;
 
 import com.alibaba.fastjson.JSONObject;
-import zuo.biao.apijson.RequestMethod;
-import zuo.biao.apijson.StringUtil;
-import zuo.biao.apijson.server.AbstractObjectParser;
-import zuo.biao.apijson.server.Parser;
-import zuo.biao.apijson.server.SQLConfig;
+import com.zhangls.apijson.base.model.RequestMethod;
+import com.zhangls.apijson.base.service.Parser;
+import com.zhangls.apijson.base.service.SqlConfig;
+import com.zhangls.apijson.base.service.impl.AbstractObjectParser;
+import com.zhangls.apijson.utils.StringUtil;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
@@ -33,7 +33,7 @@ public abstract class StandardObjectParser extends AbstractObjectParser {
      * @param name
      * @throws Exception
      */
-    public StandardObjectParser(HttpSession session, @NotNull JSONObject request, String parentPath, String name, SQLConfig arrayConfig) throws Exception {
+    public StandardObjectParser(HttpSession session, @NotNull JSONObject request, String parentPath, String name, SqlConfig arrayConfig) throws Exception {
         super(request, parentPath, name, arrayConfig);
     }
 
@@ -50,7 +50,7 @@ public abstract class StandardObjectParser extends AbstractObjectParser {
     }
 
     @Override
-    public SQLConfig newSQLConfig() throws Exception {
+    public SqlConfig newSQLConfig() throws Exception {
         return StandardSqlConfig.newSQLConfig(method, table, sqlRequest, joinList);
     }
 

@@ -6,11 +6,10 @@ import apijson.demo.server.common.UtilConstants;
 import apijson.demo.server.service.StandardService;
 import apijson.demo.server.utils.ControllerUtils;
 import com.alibaba.fastjson.JSONObject;
-import com.zhangls.apijson.base.JsonResponse;
+import com.zhangls.apijson.base.JsonApiResponse;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,9 +20,9 @@ import javax.servlet.http.HttpServletRequest;
  * @author zhangls
  */
 @Slf4j
-@RestController
-@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
-        consumes = MediaType.APPLICATION_JSON_VALUE)
+//@RestController
+//@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
+//        consumes = MediaType.APPLICATION_JSON_VALUE)
 public class StandardController {
 
 
@@ -37,15 +36,16 @@ public class StandardController {
     public JSONObject get(@RequestBody String queryStr, final HttpServletRequest request) {
         log.info("【进入 {} 方法，请求JSON串为】：{}", RequestMethod.GET, queryStr);
 
-        final Claims claims = (Claims) request.getAttribute(UtilConstants.Jwt.JWT_USER_INFO);
-        log.info("【返回的JWT信息为】：{}", claims);
+        // 获取JWT中的用户信息
+        Claims claims = (Claims) request.getAttribute(UtilConstants.Jwt.JWT_USER_INFO);
+        log.info("【获取JWT中的用户信息为】：{}", claims);
 
         // 1. 访问权限
         JSONObject jsonValidate = ControllerUtils.standardValidator(GET, queryStr);
         log.info("【验证后的，返回的JSON串为】：{}", jsonValidate);
 
         // 验证通过
-        if (jsonValidate.containsKey(JsonResponse.KEY_CODE) && jsonValidate.get(JsonResponse.KEY_CODE).equals(JsonResponse.CODE_SUCCESS)) {
+        if (jsonValidate.containsKey(JsonApiResponse.KEY_CODE) && jsonValidate.get(JsonApiResponse.KEY_CODE).equals(JsonApiResponse.CODE_SUCCESS)) {
             // 有可能返回业务异常信息
             return service.queryService(jsonValidate);
         } else {

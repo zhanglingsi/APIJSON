@@ -1,6 +1,7 @@
 package com.zhangls.apijson.base.model;
 
-import zuo.biao.apijson.MethodAccess;
+
+import com.zhangls.apijson.annotation.MethodAccess;
 
 /**
  * 数据库表(增删改)
