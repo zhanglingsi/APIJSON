@@ -2,10 +2,10 @@ package com.zhangls.apijson.base.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Maps;
 import com.zhangls.apijson.utils.StringUtil;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -18,7 +18,7 @@ public class Pair extends Entry<String, String> {
     private static final Map<String, Class<?>> CLASS_MAP;
 
     static {
-        CLASS_MAP = new HashMap<String, Class<?>>();
+        CLASS_MAP = Maps.newHashMap();
         CLASS_MAP.put(boolean.class.getSimpleName(), boolean.class);
         CLASS_MAP.put(int.class.getSimpleName(), int.class);
         CLASS_MAP.put(long.class.getSimpleName(), long.class);
@@ -32,10 +32,10 @@ public class Pair extends Entry<String, String> {
 
         CLASS_MAP.put(Object.class.getSimpleName(), Object.class);
         CLASS_MAP.put(String.class.getSimpleName(), String.class);
-        CLASS_MAP.put(Collection.class.getSimpleName(), Collection.class);//不允许指定<T>
-        CLASS_MAP.put(Map.class.getSimpleName(), Map.class);//不允许指定<T>
-        CLASS_MAP.put(JSONObject.class.getSimpleName(), JSONObject.class);//必须有，Map中没有getLongValue等方法
-        CLASS_MAP.put(JSONArray.class.getSimpleName(), JSONArray.class);//必须有，Collection中没有getJSONObject等方法
+        CLASS_MAP.put(Collection.class.getSimpleName(), Collection.class);
+        CLASS_MAP.put(Map.class.getSimpleName(), Map.class);
+        CLASS_MAP.put(JSONObject.class.getSimpleName(), JSONObject.class);
+        CLASS_MAP.put(JSONArray.class.getSimpleName(), JSONArray.class);
     }
 
 
@@ -44,7 +44,7 @@ public class Pair extends Entry<String, String> {
     }
 
     public boolean isEmpty(boolean trim) {
-        return StringUtil.isNotEmpty(key, trim) == false && StringUtil.isNotEmpty(value, trim) == false;
+        return !StringUtil.isNotEmpty(key, trim) && !StringUtil.isNotEmpty(value, trim);
     }
 
     /**
@@ -111,9 +111,9 @@ public class Pair extends Entry<String, String> {
      * @return @NonNull
      */
     public static Entry<String, String> parseEntry(String pair, boolean isRightValueDefault, String defaultValue) {
-        pair = StringUtil.getString(pair);//让客户端去掉所有空格 getNoBlankString(pair);
+        pair = StringUtil.getString(pair);
         Entry<String, String> entry = new Entry<String, String>();
-        if (pair.isEmpty() == false) {
+        if (!pair.isEmpty()) {
             int index = pair.indexOf(":");
             if (index < 0) {
                 entry.setKey(isRightValueDefault ? pair : defaultValue);

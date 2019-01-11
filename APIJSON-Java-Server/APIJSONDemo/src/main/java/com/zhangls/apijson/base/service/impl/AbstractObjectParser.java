@@ -102,7 +102,7 @@ public abstract class AbstractObjectParser implements ObjectParser {
     public static final Map<String, Pattern> COMPILE_MAP;
 
     static {
-        COMPILE_MAP = new HashMap<String, Pattern>();
+        COMPILE_MAP = Maps.newHashMap();
     }
 
     protected Map<String, String> corrected;
@@ -512,7 +512,7 @@ public abstract class AbstractObjectParser implements ObjectParser {
         return executeSQL(1, 0, 0);
     }
 
-    protected SqlConfig sqlConfig = null;//array item复用
+    protected SqlConfig sqlConfig = null;
 
     /**
      * SQL查询，for array item

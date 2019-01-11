@@ -2,6 +2,7 @@ package com.zhangls.apijson.base.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Maps;
 import com.zhangls.apijson.annotation.MethodAccess;
 import com.zhangls.apijson.annotation.NotNull;
 import com.zhangls.apijson.base.JsonApi;
@@ -25,15 +26,11 @@ import java.util.*;
  * @author Lemon
  */
 public abstract class AbstractVerifier<T> implements Verifier<T> {
-    private static final String TAG = "AbstractVerifier";
 
-
-    // <TableName, <METHOD, allowRoles>>
-    // <User, <GET, [OWNER, ADMIN]>>
     public static final Map<String, Map<RequestMethod, RequestRole[]>> ACCESS_MAP;
 
     static {
-        ACCESS_MAP = new HashMap<String, Map<RequestMethod, RequestRole[]>>();
+        ACCESS_MAP = Maps.newHashMap();
 
         ACCESS_MAP.put(Table.class.getSimpleName(), getAccessMap(Table.class.getAnnotation(MethodAccess.class)));
         ACCESS_MAP.put(Column.class.getSimpleName(), getAccessMap(Column.class.getAnnotation(MethodAccess.class)));
@@ -57,7 +54,7 @@ public abstract class AbstractVerifier<T> implements Verifier<T> {
             return null;
         }
 
-        HashMap<RequestMethod, RequestRole[]> map = new HashMap<>();
+        HashMap<RequestMethod, RequestRole[]> map = Maps.newHashMap();
         map.put(RequestMethod.GET, access.GET());
         map.put(RequestMethod.HEAD, access.HEAD());
         map.put(RequestMethod.GETS, access.GETS());
@@ -86,11 +83,6 @@ public abstract class AbstractVerifier<T> implements Verifier<T> {
         this.visitor = visitor;
         this.visitorId = visitor == null ? null : visitor.getId();
 
-        //导致内部调用且放行校验(noVerifyLogin, noVerifyRole)也抛异常
-        //		if (visitorId == null) {
-        //			throw new NullPointerException(TAG + ".setVisitor visitorId == null !!! 可能导致权限校验失效，引发安全问题！");
-        //		}
-
         return this;
     }
 
@@ -102,7 +94,8 @@ public abstract class AbstractVerifier<T> implements Verifier<T> {
      * @return
      * @throws Exception
      */
-    public boolean verify(SqlConfig config) throws Exception {
+    @Override
+    public Boolean verify(SqlConfig config) throws Exception {
         String table = config == null ? null : config.getTable();
         if (table == null) {
             return true;
@@ -112,13 +105,13 @@ public abstract class AbstractVerifier<T> implements Verifier<T> {
             role = RequestRole.UNKNOWN;
         }
 
-        if (role != RequestRole.UNKNOWN) {//未登录的角色
+        if (role != RequestRole.UNKNOWN) {
             verifyLogin();
         }
 
         RequestMethod method = config.getMethod();
 
-        verifyRole(table, method, role);//验证允许的角色
+        verifyRole(table, method, role);
 
 
         //验证角色，假定真实强制匹配<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
  * @author zhangls
  */
 public class StandardVerifier extends AbstractVerifier<Long> {
-    private static final String TAG = "DemoVerifier";
 
     // <TableName, <METHOD, allowRoles>>
     // <User, <GET, [OWNER, ADMIN]>>
@@ -46,6 +45,14 @@ public class StandardVerifier extends AbstractVerifier<Long> {
         return UtilConstants.Login.USER_ID;
     }
 
+    /**
+     * 验证访问Key
+     *
+     * 如果表名 是User 或者 Privacy 则返回 "id"  否则返回 "userId"
+     *
+     * @param table
+     * @return
+     */
     @Override
     public String getVisitorIdKey(String table) {
         return UtilConstants.Public.USER_.equals(table) || UtilConstants.Public.PRIVACY_.equals(table) ? UtilConstants.Reset.ID : getVisitorIdKey();

@@ -394,7 +394,7 @@ public class JsonApiResponse extends JsonApiObject {
         if (object == null || object.isEmpty()) {
             return object;
         }
-        JsonApiObject formatedObject = new JsonApiObject(true);
+        JSONObject formatedObject = new JSONObject(true);
 
         Set<String> set = object.keySet();
         if (set != null) {
@@ -406,8 +406,8 @@ public class JsonApiResponse extends JsonApiObject {
                 if (value instanceof JSONArray) {
                     formatedObject.put(formatArrayKey(key), format((JSONArray) value));
                     //JSONObject，往下一级提取
-                } else if (value instanceof JsonApiObject) {
-                    formatedObject.put(formatObjectKey(key), format((JsonApiObject) value));
+                } else if (value instanceof JSONObject) {
+                    formatedObject.put(formatObjectKey(key), format((JSONObject) value));
                 } else {//其它Object，直接填充
                     formatedObject.put(formatOtherKey(key), value);
                 }

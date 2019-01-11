@@ -25,14 +25,6 @@ public abstract class StandardObjectParser extends AbstractObjectParser {
         COMPILE_MAP.put("idCard", StringUtil.PATTERN_ID_CARD);
     }
 
-    /**
-     * for single object
-     *
-     * @param parentPath
-     * @param request
-     * @param name
-     * @throws Exception
-     */
     public StandardObjectParser(HttpSession session, @NotNull JSONObject request, String parentPath, String name, SqlConfig arrayConfig) throws Exception {
         super(request, parentPath, name, arrayConfig);
     }

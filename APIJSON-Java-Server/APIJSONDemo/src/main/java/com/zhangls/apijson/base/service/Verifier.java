@@ -18,7 +18,7 @@ public interface Verifier<T> {
      * @return
      * @throws Exception
      */
-    boolean verify(SqlConfig config) throws Exception;
+    Boolean verify(SqlConfig config) throws Exception;
 
     /**
      * 允许请求，角色不好判断，让访问者发过来角色名，OWNER,CONTACT,ADMIN等

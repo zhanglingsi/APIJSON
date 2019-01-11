@@ -56,13 +56,13 @@ public interface SqlConfig {
     String getSQL(Boolean prepared) throws Exception;
 
 
-    Boolean isTest();
+    boolean isTest();
 
-    SqlConfig setTest(Boolean test);
+    SqlConfig setTest(boolean test);
 
-    Boolean isCacheStatic();
+    boolean isCacheStatic();
 
-    SqlConfig setCacheStatic(Boolean cacheStatic);
+    SqlConfig setCacheStatic(boolean cacheStatic);
 
     Integer getType();
 

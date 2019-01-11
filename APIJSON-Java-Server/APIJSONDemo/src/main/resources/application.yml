@@ -1,7 +1,7 @@
 server:
-    port: 9090
+    port: 9999
     context-path: /
-    address: 172.18.230.86
+#    address: 172.18.230.86
     sessionTimeout: 30
 
 logging:

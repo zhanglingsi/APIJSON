@@ -87,9 +87,9 @@ public abstract class AbstractSQLConfig implements SqlConfig {
     private Integer query; //JSONRequest.query
     private Integer type; //ObjectParser.type
     private List<Join> joinList; //joinList
-    //array item >>>>>>>>>>
-    private Boolean test; //测试
-    private Boolean cacheStatic; //静态缓存
+
+    private boolean test; //测试
+    private boolean cacheStatic; //静态缓存
 
     public AbstractSQLConfig(RequestMethod method) {
         setMethod(method);
@@ -749,23 +749,23 @@ public abstract class AbstractSQLConfig implements SqlConfig {
     }
 
     @Override
-    public Boolean isTest() {
+    public boolean isTest() {
         return test;
     }
 
     @Override
-    public AbstractSQLConfig setTest(Boolean test) {
+    public AbstractSQLConfig setTest(boolean test) {
         this.test = test;
         return this;
     }
 
     @Override
-    public Boolean isCacheStatic() {
+    public boolean isCacheStatic() {
         return cacheStatic;
     }
 
     @Override
-    public AbstractSQLConfig setCacheStatic(Boolean cacheStatic) {
+    public AbstractSQLConfig setCacheStatic(boolean cacheStatic) {
         this.cacheStatic = cacheStatic;
         return this;
     }

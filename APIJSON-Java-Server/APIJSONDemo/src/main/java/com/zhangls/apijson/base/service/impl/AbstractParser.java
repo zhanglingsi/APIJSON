@@ -30,8 +30,6 @@ import static com.zhangls.apijson.base.model.RequestMethod.GET;
 @Slf4j
 public abstract class AbstractParser<T> implements Parser<T>, SqlCreator {
 
-    protected static final String TAG = "AbstractParser";
-
     public AbstractParser() {
         this(null);
     }
@@ -39,7 +37,6 @@ public abstract class AbstractParser<T> implements Parser<T>, SqlCreator {
     public AbstractParser(RequestMethod method) {
         this(method, false);
     }
-
 
     /**
      * @param method   null ? requestMethod = GET

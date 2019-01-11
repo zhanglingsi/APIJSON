@@ -12,6 +12,7 @@ import com.zhangls.apijson.base.JsonApiRequest;
 import com.zhangls.apijson.base.JsonApiResponse;
 import com.zhangls.apijson.base.exception.ConditionErrorException;
 import com.zhangls.apijson.base.exception.NotExistException;
+import com.zhangls.apijson.base.service.impl.JsonBaseRequest;
 import com.zhangls.apijson.utils.StringUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -115,7 +116,7 @@ public class LoginController {
         //手机号是否已注册
         //SELECT  COUNT(*)  AS COUNT  FROM `apijson`.`apijson_privacy` WHERE  (  (`phone`='13000082001')  )  LIMIT 1 OFFSET 0
         JSONObject phoneResponse = new StandardParser(HEADS, true).parseResponse(
-                new JsonApiRequest(
+                new JsonBaseRequest(
                         new Privacy().setPhone(phone)
                 )
         );
@@ -132,7 +133,7 @@ public class LoginController {
 
         //根据phone获取User
         JSONObject privacyResponse = new StandardParser(GETS, true).parseResponse(
-                new JsonApiRequest(
+                new JsonBaseRequest(
                         new Privacy().setPhone(phone)
                 ).setFormat(true)
         );
@@ -148,7 +149,7 @@ public class LoginController {
         if (isPassword) {
             response = new JsonApiResponse(
                     new StandardParser(HEADS, true).parseResponse(
-                            new JsonApiRequest(new Privacy(userId).setPassword(password))
+                            new JsonBaseRequest(new Privacy(userId).setPassword(password))
                     )
             );
         } else {//verify手机验证码登录
@@ -160,13 +161,13 @@ public class LoginController {
         }
 
         response = response.getJSONResponse(isPassword ? UtilConstants.Public.PRIVACY_ : UtilConstants.Public.VERIFY_);
-        if (JsonApiResponse.isExist(response) == false) {
+        if (!JsonApiResponse.isExist(response)) {
             return StandardParser.newErrorResult(new ConditionErrorException("账号或密码错误"));
         }
 
         response = new JsonApiResponse(
                 new StandardParser(GETS, true).parseResponse(
-                        new JsonApiRequest(new User(userId)).setFormat(true)
+                        new JsonBaseRequest(new User(userId)).setFormat(true)
                 )
         );
 

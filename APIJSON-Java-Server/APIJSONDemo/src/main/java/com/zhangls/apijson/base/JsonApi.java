@@ -134,7 +134,7 @@ public class JsonApi {
             log.error("参数类型异常：{}", clazz);
         } else {
             try {
-                int features = com.alibaba.fastjson.JSON.DEFAULT_PARSER_FEATURE;
+                int features = JSON.DEFAULT_PARSER_FEATURE;
                 features |= Feature.OrderedField.getMask();
                 return com.alibaba.fastjson.JSON.parseObject(getCorrectJson(json), clazz, features);
             } catch (Exception e) {

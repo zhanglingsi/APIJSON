@@ -369,7 +369,7 @@ public class StringUtil {
         PATTERN_ALPHA = Pattern.compile("^[a-zA-Z]+$");
         PATTERN_ALPHA_BIG = Pattern.compile("^[A-Z]+$");
         PATTERN_ALPHA_SMALL = Pattern.compile("^[a-z]+$");
-        PATTERN_NAME = Pattern.compile("^[0-9a-zA-Z_]+$");//已用55个中英字符测试通过
+        PATTERN_NAME = Pattern.compile("^[0-9a-zA-Z_]+$");
         PATTERN_PHONE = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0-2,5-9])|(17[0-9]))\\d{8}$");
         PATTERN_EMAIL = Pattern.compile("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
         PATTERN_ID_CARD = Pattern.compile("(^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)|(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{2}$)");

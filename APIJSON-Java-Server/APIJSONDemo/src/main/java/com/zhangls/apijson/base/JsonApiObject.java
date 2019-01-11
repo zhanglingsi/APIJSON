@@ -16,7 +16,7 @@ import java.util.Map;
 public class JsonApiObject extends JSONObject {
 
     public JsonApiObject() {
-        super(true);
+        super(Boolean.TRUE);
     }
 
     public JsonApiObject(Object object) {

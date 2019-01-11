@@ -28,6 +28,8 @@ public class StandardParser extends AbstractParser<Long> {
         super(method, noVerify);
     }
 
+
+
     protected HttpSession session;
 
     public HttpSession getSession() {
@@ -56,6 +58,11 @@ public class StandardParser extends AbstractParser<Long> {
         return new StandardSqlExecutor();
     }
 
+    /**
+     * 登陆使用
+     * @param request
+     * @return
+     */
     @Override
     public JSONObject parseResponse(JSONObject request) {
         //补充format
