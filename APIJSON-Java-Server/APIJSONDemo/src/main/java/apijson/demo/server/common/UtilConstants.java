@@ -80,4 +80,15 @@ public interface UtilConstants {
         public static final String JWT_USER_INFO = "jwtUserInfo";
 
     }
+
+    class ISqlConfig {
+        public static final String DATABASE_MYSQL = "MySQL";
+        public static final String DATABASE_POSTGRESQL = "PostgreSQL";
+        public static final String SCHEMA_INFORMATION = "information_schema";
+        public static final String TABLE_SCHEMA = "table_schema";
+        public static final String TABLE_NAME = "table_name";
+        public static final Integer TYPE_CHILD = 0;
+        public static final Integer TYPE_ITEM = 1;
+        public static final Integer TYPE_ITEM_CHILD_0 = 2;
+    }
 }

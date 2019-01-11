@@ -12,6 +12,7 @@ import com.zhangls.apijson.base.JsonApiResponse;
 import com.zhangls.apijson.base.exception.ConditionErrorException;
 import com.zhangls.apijson.base.exception.ConflictException;
 import com.zhangls.apijson.base.model.RequestMethod;
+import com.zhangls.apijson.base.service.impl.ParserHelper;
 import com.zhangls.apijson.utils.StringUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -89,16 +90,16 @@ public class ResetPassword {
                 }
             }
         } catch (Exception e) {
-            return StandardParser.extendErrorResult(requestObject, e);
+            return ParserHelper.extendErrorResult(requestObject, e);
         }
 
 
         if (StringUtil.isPassword(oldPassword)) {
             if (userId <= 0) {
-                return StandardParser.extendErrorResult(requestObject, new IllegalArgumentException(UtilConstants.Reset.ID + ":value 中value不合法！"));
+                return ParserHelper.extendErrorResult(requestObject, new IllegalArgumentException(UtilConstants.Reset.ID + ":value 中value不合法！"));
             }
             if (oldPassword.equals(password)) {
-                return StandardParser.extendErrorResult(requestObject, new ConflictException("新旧密码不能一样！"));
+                return ParserHelper.extendErrorResult(requestObject, new ConflictException("新旧密码不能一样！"));
             }
 
             //验证旧密码
@@ -114,7 +115,7 @@ public class ResetPassword {
                     )
             );
             if (JsonApiResponse.isExist(response.getJSONResponse(UtilConstants.Public.PRIVACY_)) == false) {
-                return StandardParser.extendErrorResult(requestObject, new ConditionErrorException("账号或原密码错误，请重新输入！"));
+                return ParserHelper.extendErrorResult(requestObject, new ConditionErrorException("账号或原密码错误，请重新输入！"));
             }
         } else if (StringUtil.isPhone(phone) && StringUtil.isVerify(verify)) {
             JsonApiResponse response = new JsonApiResponse(ControllerUtils.headVerify(type, phone, verify));
@@ -122,7 +123,7 @@ public class ResetPassword {
                 return response;
             }
             if (JsonApiResponse.isExist(response.getJSONResponse(UtilConstants.Public.VERIFY_)) == false) {
-                return StandardParser.extendErrorResult(response, new ConditionErrorException("手机号或验证码错误！"));
+                return ParserHelper.extendErrorResult(response, new ConditionErrorException("手机号或验证码错误！"));
             }
             response = new JsonApiResponse(
                     new StandardParser(RequestMethod.GET, true).parseResponse(
@@ -138,7 +139,7 @@ public class ResetPassword {
 
             requestObject.put(UtilConstants.Public.PRIVACY_, privacyObj);
         } else {
-            return StandardParser.extendErrorResult(requestObject, new IllegalArgumentException("请输入合法的 旧密码 或 手机号+验证码 ！"));
+            return ParserHelper.extendErrorResult(requestObject, new IllegalArgumentException("请输入合法的 旧密码 或 手机号+验证码 ！"));
         }
         //TODO 上线版加上   password = MD5Util.MD5(password);
 

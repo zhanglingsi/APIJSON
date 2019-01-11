@@ -130,7 +130,7 @@ public abstract class AbstractSQLExecutor implements SqlExecutor {
             case HEADS:
                 rs = executeQuery(config);
 
-                result = rs.next() ? AbstractParser.newSuccessResult() : AbstractParser.newErrorResult(new SQLException("数据库错误, rs.next() 失败！"));
+                result = rs.next() ? ParserHelper.newSuccessResult() : ParserHelper.newErrorResult(new SQLException("数据库错误, rs.next() 失败！"));
                 result.put(JsonApiResponse.KEY_COUNT, rs.getLong(1));
 
                 rs.close();
@@ -141,7 +141,7 @@ public abstract class AbstractSQLExecutor implements SqlExecutor {
             case DELETE:
                 long updateCount = executeUpdate(config);
 
-                result = AbstractParser.newResult(updateCount > 0 ? JsonApiResponse.CODE_SUCCESS : JsonApiResponse.CODE_NOT_FOUND
+                result = ParserHelper.newResult(updateCount > 0 ? JsonApiResponse.CODE_SUCCESS : JsonApiResponse.CODE_NOT_FOUND
                         , updateCount > 0 ? JsonApiResponse.MSG_SUCCEED : "没权限访问或对象不存在！");
 
                 //id,id{}至少一个会有，一定会返回，不用抛异常来阻止关联写操作时前面错误导致后面无条件执行！

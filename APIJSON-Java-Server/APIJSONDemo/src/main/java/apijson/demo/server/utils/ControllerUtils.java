@@ -9,6 +9,8 @@ import com.zhangls.apijson.base.JsonApiRequest;
 import com.zhangls.apijson.base.JsonApiResponse;
 import com.zhangls.apijson.base.exception.ConditionErrorException;
 import com.zhangls.apijson.base.exception.NotExistException;
+import com.zhangls.apijson.base.service.impl.AbstractParser;
+import com.zhangls.apijson.base.service.impl.ParserHelper;
 import com.zhangls.apijson.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import com.zhangls.apijson.base.model.RequestMethod;
@@ -41,7 +43,7 @@ public class ControllerUtils {
         );
         Verify verify = response.getObject(Verify.class);
         if (verify == null) {
-            return StandardParser.newErrorResult(StringUtil.isEmpty(code, true)
+            return ParserHelper.newErrorResult(StringUtil.isEmpty(code, true)
                     ? new NotExistException("验证码不存在！") : new ConditionErrorException("手机号或验证码错误！"));
         }
 
@@ -52,7 +54,7 @@ public class ControllerUtils {
             new StandardParser(RequestMethod.DELETE, true).parseResponse(
                     new JsonApiRequest(new Verify(type, phone)).setTag(UtilConstants.Public.VERIFY_)
             );
-            return StandardParser.newErrorResult(new TimeoutException("验证码已过期！"));
+            return ParserHelper.newErrorResult(new TimeoutException("验证码已过期！"));
         }
 
         return new JsonApiResponse(
@@ -72,10 +74,10 @@ public class ControllerUtils {
         // 1. 转换验证
         JSONObject requestObject = null;
         try {
-            requestObject = JsonParseUtils.parseRequest(reqJson);
+            requestObject = AbstractParser.parseRequest(reqJson);
             log.info("【请求JSON串转换JSONObject成功！】");
         } catch (Exception e) {
-            return JsonParseUtils.newErrorResult(e);
+            return ParserHelper.newErrorResult(e);
         }
 
         // 2. 权限验证

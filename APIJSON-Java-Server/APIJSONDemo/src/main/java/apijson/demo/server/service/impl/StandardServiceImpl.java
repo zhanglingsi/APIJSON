@@ -5,6 +5,7 @@ import apijson.demo.server.mapper.StandardMapper;
 import apijson.demo.server.service.StandardService;
 import apijson.demo.server.utils.JsonParseUtils;
 import com.alibaba.fastjson.JSONObject;
+import com.zhangls.apijson.base.service.impl.ParserHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,10 +35,10 @@ public class StandardServiceImpl implements StandardService {
 
         }catch (SQLProviderException ex){
             log.error("【JSON串 转 SQL语句 失败！】");
-            return JsonParseUtils.newErrorResult(ex);
+            return ParserHelper.newErrorResult(ex);
         }catch (Exception e){
             log.error("【查询语句失败！】");
-            return JsonParseUtils.newErrorResult(e);
+            return ParserHelper.newErrorResult(e);
         }
 
         return null;

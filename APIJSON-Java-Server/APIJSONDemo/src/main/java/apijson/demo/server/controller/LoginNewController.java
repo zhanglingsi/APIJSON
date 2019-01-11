@@ -8,6 +8,8 @@ import apijson.demo.server.utils.JwtUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.zhangls.apijson.base.JsonApiResponse;
+import com.zhangls.apijson.base.service.impl.AbstractParser;
+import com.zhangls.apijson.base.service.impl.ParserHelper;
 import com.zhangls.apijson.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +72,7 @@ public class LoginNewController {
         // 2. 验证请求字符串
         JSONObject reqParse = null;
         try {
-            reqParse = JsonParseUtils.parseRequest(reqStr);
+            reqParse = AbstractParser.parseRequest(reqStr);
             String phone = reqParse.getString(UtilConstants.Login.PHONE);
             String password = reqParse.getString(UtilConstants.Login.PASS_WORD);
 
@@ -89,7 +91,7 @@ public class LoginNewController {
                 }
             }
         } catch (Exception e) {
-            return JsonParseUtils.extendErrorResult(reqParse, e).toJSONString();
+            return ParserHelper.extendErrorResult(reqParse, e).toJSONString();
         }
 
         // 3. 请求Service返回结果(JSONObject对象) ,验证成功 返回token串

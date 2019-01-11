@@ -11,6 +11,7 @@ import com.zhangls.apijson.base.JsonApiRequest;
 import com.zhangls.apijson.base.JsonApiResponse;
 import com.zhangls.apijson.base.exception.ConditionErrorException;
 import com.zhangls.apijson.base.model.RequestMethod;
+import com.zhangls.apijson.base.service.impl.ParserHelper;
 import com.zhangls.apijson.utils.StringUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -83,7 +84,7 @@ public class RegisterController {
                 return newIllegalArgumentResult(requestObject, VERIFY);
             }
         } catch (Exception e) {
-            return StandardParser.extendErrorResult(requestObject, e);
+            return ParserHelper.extendErrorResult(requestObject, e);
         }
 
 
@@ -93,7 +94,7 @@ public class RegisterController {
         }
         //手机号或验证码错误
         if (JsonApiResponse.isExist(response.getJSONResponse(VERIFY_)) == false) {
-            return StandardParser.extendErrorResult(response, new ConditionErrorException("手机号或验证码错误！"));
+            return ParserHelper.extendErrorResult(response, new ConditionErrorException("手机号或验证码错误！"));
         }
 
 
@@ -145,7 +146,7 @@ public class RegisterController {
      * @return
      */
     public static JSONObject newIllegalArgumentResult(JSONObject requestObject, String key, String msg) {
-        return StandardParser.extendErrorResult(requestObject
+        return ParserHelper.extendErrorResult(requestObject
                 , new IllegalArgumentException(key + ":value 中value不合法！" + StringUtil.getString(msg)));
     }
 

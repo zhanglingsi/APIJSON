@@ -9,6 +9,7 @@ import com.zhangls.apijson.base.JsonApi;
 import com.zhangls.apijson.base.JsonApiRequest;
 import com.zhangls.apijson.base.JsonApiResponse;
 import com.zhangls.apijson.base.model.RequestMethod;
+import com.zhangls.apijson.base.service.impl.ParserHelper;
 import com.zhangls.apijson.utils.StringUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,7 +40,7 @@ public class VerifyController {
             type = requestObject.getIntValue(UtilConstants.Login.TYPE);
             phone = requestObject.getString(UtilConstants.Reset.PHONE);
         } catch (Exception e) {
-            return StandardParser.extendErrorResult(requestObject, e);
+            return ParserHelper.extendErrorResult(requestObject, e);
         }
 
         new StandardParser(RequestMethod.DELETE, true).parse(newVerifyRequest(type, phone, null));
@@ -82,7 +83,7 @@ public class VerifyController {
             type = requestObject.getIntValue(UtilConstants.Login.TYPE);
             phone = requestObject.getString(UtilConstants.Reset.PHONE);
         } catch (Exception e) {
-            return StandardParser.extendErrorResult(requestObject, e);
+            return ParserHelper.extendErrorResult(requestObject, e);
         }
         return new StandardParser(RequestMethod.GETS, true).parseResponse(newVerifyRequest(type, phone, null));
     }
@@ -105,7 +106,7 @@ public class VerifyController {
             phone = requestObject.getString(UtilConstants.Reset.PHONE);
             verify = requestObject.getString(UtilConstants.Reset.VERIFY);
         } catch (Exception e) {
-            return StandardParser.extendErrorResult(requestObject, e);
+            return ParserHelper.extendErrorResult(requestObject, e);
         }
         return ControllerUtils.headVerify(type, phone, verify);
     }

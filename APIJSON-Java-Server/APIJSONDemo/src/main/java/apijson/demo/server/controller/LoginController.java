@@ -13,6 +13,7 @@ import com.zhangls.apijson.base.JsonApiResponse;
 import com.zhangls.apijson.base.exception.ConditionErrorException;
 import com.zhangls.apijson.base.exception.NotExistException;
 import com.zhangls.apijson.base.service.impl.JsonBaseRequest;
+import com.zhangls.apijson.base.service.impl.ParserHelper;
 import com.zhangls.apijson.utils.StringUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -109,7 +110,7 @@ public class LoginController {
             requestObject.remove(UtilConstants.Login.FORMAT);
 
         } catch (Exception e) {
-            return StandardParser.extendErrorResult(requestObject, e);
+            return ParserHelper.extendErrorResult(requestObject, e);
         }
 
 
@@ -122,13 +123,13 @@ public class LoginController {
         );
 
         if (!JsonApiResponse.isSuccess(phoneResponse)) {
-            return StandardParser.newResult(phoneResponse.getIntValue(JsonApiResponse.KEY_CODE), phoneResponse.getString(JsonApiResponse.KEY_MSG));
+            return ParserHelper.newResult(phoneResponse.getIntValue(JsonApiResponse.KEY_CODE), phoneResponse.getString(JsonApiResponse.KEY_MSG));
         }
 
         JsonApiResponse response = new JsonApiResponse(phoneResponse).getJSONResponse(UtilConstants.Public.PRIVACY_);
 
         if (!JsonApiResponse.isExist(response)) {
-            return StandardParser.newErrorResult(new NotExistException("手机号未注册"));
+            return ParserHelper.newErrorResult(new NotExistException("手机号未注册"));
         }
 
         //根据phone获取User
@@ -162,7 +163,7 @@ public class LoginController {
 
         response = response.getJSONResponse(isPassword ? UtilConstants.Public.PRIVACY_ : UtilConstants.Public.VERIFY_);
         if (!JsonApiResponse.isExist(response)) {
-            return StandardParser.newErrorResult(new ConditionErrorException("账号或密码错误"));
+            return ParserHelper.newErrorResult(new ConditionErrorException("账号或密码错误"));
         }
 
         response = new JsonApiResponse(
@@ -173,7 +174,7 @@ public class LoginController {
 
         User user = response.getObject(User.class);
         if (user == null || BaseModel.value(user.getId()) != userId) {
-            return StandardParser.newErrorResult(new NullPointerException("服务器内部错误"));
+            return ParserHelper.newErrorResult(new NullPointerException("服务器内部错误"));
         }
 
 

@@ -14,9 +14,7 @@ import javax.validation.constraints.NotNull;
  */
 public class StandardVerifier extends AbstractVerifier<Long> {
 
-    // <TableName, <METHOD, allowRoles>>
-    // <User, <GET, [OWNER, ADMIN]>>
-    static { //注册权限
+    static {
         ACCESS_MAP.put(User.class.getSimpleName(), getAccessMap(User.class.getAnnotation(MethodAccess.class)));
         ACCESS_MAP.put(Privacy.class.getSimpleName(), getAccessMap(Privacy.class.getAnnotation(MethodAccess.class)));
         ACCESS_MAP.put(Moment.class.getSimpleName(), getAccessMap(Moment.class.getAnnotation(MethodAccess.class)));

@@ -25,7 +25,7 @@ public interface SqlConfig {
     Integer TYPE_CHILD = 0;
     Integer TYPE_ITEM = 1;
     Integer TYPE_ITEM_CHILD_0 = 2;
-
+    //////////////////////////////////////////////////客户端实现/////////////////////////////////////////////////
     /**
      * 获取数据库地址
      *
@@ -55,53 +55,98 @@ public interface SqlConfig {
      */
     String getSQL(Boolean prepared) throws Exception;
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * 测试
+     *
+     * @return
+     */
     boolean isTest();
 
     SqlConfig setTest(boolean test);
 
+    /**
+     * @return
+     */
     boolean isCacheStatic();
 
     SqlConfig setCacheStatic(boolean cacheStatic);
 
+    /**
+     * @return
+     */
     Integer getType();
 
     SqlConfig setType(Integer type);
 
+    /**
+     * @return
+     */
     Integer getCount();
 
     SqlConfig setCount(Integer count);
 
+    /**
+     * @return
+     */
     Integer getPage();
 
     SqlConfig setPage(Integer page);
 
+    /**
+     * @return
+     */
     Integer getQuery();
 
     SqlConfig setQuery(Integer query);
 
+    /**
+     * @return
+     */
     Integer getPosition();
 
     SqlConfig setPosition(Integer position);
 
+    /**
+     * @return
+     */
     RequestMethod getMethod();
 
     SqlConfig setMethod(RequestMethod method);
 
+    /**
+     * @return
+     */
     Object getId();
 
     SqlConfig setId(Object id);
 
+    /**
+     * @return
+     */
     RequestRole getRole();
 
     SqlConfig setRole(RequestRole role);
 
+    /**
+     * @return
+     */
     String getDatabase();
 
     SqlConfig setDatabase(String database);
 
+    /**
+     * 根据数据库类型取关键字分隔符 mysql用`schema`
+     * 其他数据库用       "schema"
+     *
+     * @return
+     */
     String getQuote();
 
+    /**
+     * @return
+     */
     String getSchema();
 
     SqlConfig setSchema(String schema);
@@ -114,6 +159,8 @@ public interface SqlConfig {
      */
     String getTable();
 
+    SqlConfig setTable(String table);
+
     /**
      * 数据库里的真实Table名
      *
@@ -123,7 +170,6 @@ public interface SqlConfig {
 
     String getTablePath();
 
-    SqlConfig setTable(String table);
 
     String getGroup();
 

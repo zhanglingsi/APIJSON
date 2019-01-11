@@ -111,10 +111,13 @@ public class StandardParser extends AbstractParser<Long> {
         super.onVerifyContent();
     }
 
-    //	//可重写来设置最大查询数量
-    //	@Override
-    //	public int getMaxQueryCount() {
-    //		return 50;
-    //	}
+    /**
+     * 可重写来设置最大查询数量
+     * @return
+     */
+    @Override
+    public Integer getMaxQueryCount() {
+        return 50;
+    }
 
 }

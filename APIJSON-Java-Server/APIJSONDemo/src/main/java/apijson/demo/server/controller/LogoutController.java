@@ -7,6 +7,7 @@ import apijson.demo.server.model.User;
 import apijson.demo.server.model.Verify;
 import com.alibaba.fastjson.JSONObject;
 import com.zhangls.apijson.base.JsonApiResponse;
+import com.zhangls.apijson.base.service.impl.ParserHelper;
 import com.zhangls.apijson.utils.StringUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -50,11 +51,11 @@ public class LogoutController {
 //            Log.d(TAG, "logout  userId = " + userId + "; session.getId() = " + (session == null ? null : session.getId()));
             session.invalidate();
         } catch (Exception e) {
-            return StandardParser.newErrorResult(e);
+            return ParserHelper.newErrorResult(e);
         }
 
-        JSONObject result = StandardParser.newSuccessResult();
-        JSONObject user = StandardParser.newSuccessResult();
+        JSONObject result = ParserHelper.newSuccessResult();
+        JSONObject user = ParserHelper.newSuccessResult();
         user.put(ID, userId);
         user.put(COUNT, 1);
         result.put(StringUtil.firstCase(USER_), user);

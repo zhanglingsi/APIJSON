@@ -11,6 +11,7 @@ import com.zhangls.apijson.base.JsonApiResponse;
 import com.zhangls.apijson.base.exception.ConditionErrorException;
 import com.zhangls.apijson.base.exception.OutOfRangeException;
 import com.zhangls.apijson.base.model.RequestMethod;
+import com.zhangls.apijson.base.service.impl.ParserHelper;
 import com.zhangls.apijson.utils.StringUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,7 +69,7 @@ public class BalanceController {
                 throw new IllegalArgumentException(UtilConstants.Public.PRIVACY_ + "." + UtilConstants.Balance._PAY_PASS_WORD + ":value 中value不合法！");
             }
         } catch (Exception e) {
-            return StandardParser.extendErrorResult(requestObject, e);
+            return ParserHelper.extendErrorResult(requestObject, e);
         }
 
         //验证密码<<<<<<<<<<<<<<<<<<<<<<<
@@ -81,7 +82,7 @@ public class BalanceController {
         );
         response = response.getJSONResponse(UtilConstants.Public.PRIVACY_);
         if (JsonApiResponse.isExist(response) == false) {
-            return StandardParser.extendErrorResult(requestObject, new ConditionErrorException("支付密码错误！"));
+            return ParserHelper.extendErrorResult(requestObject, new ConditionErrorException("支付密码错误！"));
         }
 
         //验证密码>>>>>>>>>>>>>>>>>>>>>>>>
@@ -90,10 +91,10 @@ public class BalanceController {
         //验证金额范围<<<<<<<<<<<<<<<<<<<<<<<
 
         if (change == 0) {
-            return StandardParser.extendErrorResult(requestObject, new OutOfRangeException("balance+的值不能为0！"));
+            return ParserHelper.extendErrorResult(requestObject, new OutOfRangeException("balance+的值不能为0！"));
         }
         if (Math.abs(change) > 10000) {
-            return StandardParser.extendErrorResult(requestObject, new OutOfRangeException("单次 充值/提现 的金额不能超过10000元！"));
+            return ParserHelper.extendErrorResult(requestObject, new OutOfRangeException("单次 充值/提现 的金额不能超过10000元！"));
         }
 
         //验证金额范围>>>>>>>>>>>>>>>>>>>>>>>>
@@ -109,11 +110,11 @@ public class BalanceController {
             Privacy privacy = response == null ? null : response.getObject(Privacy.class);
             long id = privacy == null ? 0 : BaseModel.value(privacy.getId());
             if (id != userId) {
-                return StandardParser.extendErrorResult(requestObject, new Exception("服务器内部错误！"));
+                return ParserHelper.extendErrorResult(requestObject, new Exception("服务器内部错误！"));
             }
 
             if (BaseModel.value(privacy.getBalance()) < -change) {
-                return StandardParser.extendErrorResult(requestObject, new OutOfRangeException("余额不足！"));
+                return ParserHelper.extendErrorResult(requestObject, new OutOfRangeException("余额不足！"));
             }
         }
 

@@ -69,7 +69,7 @@ public abstract class AbstractObjectParser implements ObjectParser {
 
         this.type = arrayConfig == null ? 0 : arrayConfig.getType();
         this.joinList = arrayConfig == null ? null : arrayConfig.getJoinList();
-        this.path = AbstractParser.getAbsPath(parentPath, name);
+        this.path = ParserHelper.getAbsPath(parentPath, name);
         this.table = Pair.parseEntry(name, true).getKey();
         this.isTable = JsonApiObject.isTableKey(table);
 
@@ -318,7 +318,7 @@ public abstract class AbstractObjectParser implements ObjectParser {
             }
             //key{}@ getRealKey
             String replaceKey = key.substring(0, key.length() - 1);
-            String targetPath = AbstractParser.getValuePath(type.equals(SqlConfig.TYPE_ITEM)
+            String targetPath = ParserHelper.getValuePath(type.equals(SqlConfig.TYPE_ITEM)
                     ? path : parentPath, new String((String) value));
 
             //先尝试获取，尽量保留缺省依赖路径，这样就不需要担心路径改变
@@ -614,7 +614,7 @@ public abstract class AbstractObjectParser implements ObjectParser {
             String k = AbstractSQLConfig.getRealKey(method, key, false, false, "`"); //FIXME PG 是 "
 
             response.put(k, result);
-            parser.putQueryResult(AbstractParser.getAbsPath(path, k), result);
+            parser.putQueryResult(ParserHelper.getAbsPath(path, k), result);
         }
     }
 

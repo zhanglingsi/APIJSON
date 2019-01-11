@@ -826,9 +826,9 @@ public abstract class AbstractSQLConfig implements SqlConfig {
     public Map<String, List<String>> getCombine() {
         List<String> andList = combine == null ? null : combine.get("&");
         if (andList == null) {
-            andList = where == null ? new ArrayList<String>() : new ArrayList<String>(where.keySet());
+            andList = where == null ? Lists.newArrayList() : Lists.newArrayList(where.keySet());
             if (combine == null) {
-                combine = new HashMap<>();
+                combine = Maps.newHashMap();
             }
             combine.put("&", andList);
         }
