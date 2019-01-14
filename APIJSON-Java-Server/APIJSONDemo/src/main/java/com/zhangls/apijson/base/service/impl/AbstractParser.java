@@ -519,7 +519,6 @@ public abstract class AbstractParser<T> implements Parser<T>, SqlCreator {
             }
 
             op.recycle();
-            op = null;
         }
 
         return response;

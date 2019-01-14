@@ -16,6 +16,7 @@ import com.zhangls.apijson.base.model.RequestRole;
 import com.zhangls.apijson.base.model.Table;
 import com.zhangls.apijson.base.service.SqlConfig;
 import com.zhangls.apijson.utils.StringUtil;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -29,6 +30,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 public abstract class AbstractSQLConfig implements SqlConfig {
+
     private static final String TAG = "SqlConfig";
 
 
@@ -81,15 +83,19 @@ public abstract class AbstractSQLConfig implements SqlConfig {
     private Map<String, List<String>> combine; //条件组合，{ "&":[key], "|":[key], "!":[key] }
 
 
-    private Integer count; //Table数量
-    private Integer page; //Table所在页码
-    private Integer position; //Table在[]中的位置
-    private Integer query; //JSONRequest.query
-    private Integer type; //ObjectParser.type
+    private int count; //Table数量
+    private int page; //Table所在页码
+    private int position; //Table在[]中的位置
+    private int query; //JSONRequest.query
+    private int type; //ObjectParser.type
     private List<Join> joinList; //joinList
 
     private boolean test; //测试
     private boolean cacheStatic; //静态缓存
+
+    public AbstractSQLConfig() {
+        this.setMethod(RequestMethod.GET);
+    }
 
     public AbstractSQLConfig(RequestMethod method) {
         setMethod(method);
@@ -1851,7 +1857,7 @@ public abstract class AbstractSQLConfig implements SqlConfig {
             }
 
             if (idIn != null && idIn instanceof List) {
-                if (idIn != null && ((List<?>) idIn).contains(id) == false) {//empty有效  BaseModel.isEmpty(idIn) == false) {
+                if (idIn != null && !((List<?>) idIn).contains(id)) {
                     throw new NotExistException(TAG + ": newSQLConfig  idIn != null && ((JSONArray) idIn).contains(id) == false");
                 }
             }

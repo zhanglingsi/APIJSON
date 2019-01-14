@@ -103,6 +103,12 @@ public abstract class AbstractObjectParser implements ObjectParser {
 
     static {
         COMPILE_MAP = Maps.newHashMap();
+        //手机
+        COMPILE_MAP.put("phone", StringUtil.PATTERN_PHONE);
+        //邮箱
+        COMPILE_MAP.put("email", StringUtil.PATTERN_EMAIL);
+        //身份证号
+        COMPILE_MAP.put("idCard", StringUtil.PATTERN_ID_CARD);
     }
 
     protected Map<String, String> corrected;
@@ -280,7 +286,7 @@ public abstract class AbstractObjectParser implements ObjectParser {
                             }
                         }
                     } catch (Exception e) {
-                        if (tri == false) {
+                        if (!tri) {
                             //不忽略错误，抛异常
                             throw e;
                         }

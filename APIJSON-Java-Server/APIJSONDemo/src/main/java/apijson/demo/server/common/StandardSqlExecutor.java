@@ -19,7 +19,6 @@ import java.util.Map;
  */
 @Slf4j
 public class StandardSqlExecutor extends AbstractSQLExecutor {
-    private static final String TAG = "DemoSQLExecutor";
 
 
     static {

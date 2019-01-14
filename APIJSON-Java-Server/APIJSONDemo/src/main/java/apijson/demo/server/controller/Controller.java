@@ -14,8 +14,10 @@ import javax.servlet.http.HttpSession;
 
 import apijson.demo.server.common.StandardParser;
 import apijson.demo.server.common.UtilConstants;
+import apijson.demo.server.demo.DemoParser;
 import com.zhangls.apijson.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -32,6 +34,11 @@ import com.zhangls.apijson.base.model.RequestMethod;
 @RestController
 public class Controller {
 
+    @Autowired
+    private StandardParser standardParser;
+    @Autowired
+    private DemoParser parser;
+
     /**
      * 获取 查询
      */
@@ -39,7 +46,10 @@ public class Controller {
     public String get(@RequestBody String request, HttpSession session) {
         log.info("【进入 {} 方法，请求JSON串为】：{}", RequestMethod.getName(GET), request);
 
-        return new StandardParser(GET).setSession(session).parse(request);
+        standardParser.setMethod(GET);
+        return standardParser.setSession(session).parse(request);
+//        parser.setMethod(GET);
+//        return parser.parse(request);
     }
 
     /**
@@ -49,7 +59,8 @@ public class Controller {
     public String head(@RequestBody String request, HttpSession session) {
         log.info("进入 {} 方法，请求JSON串为：{}", RequestMethod.getName(HEAD), request);
 
-        return new StandardParser(HEAD).setSession(session).parse(request);
+        standardParser.setMethod(HEAD);
+        return standardParser.setSession(session).parse(request);
     }
 
     /**
@@ -59,7 +70,8 @@ public class Controller {
     public String gets(@RequestBody String request, HttpSession session) {
         log.info("进入 {} 方法，请求JSON串为：{}", RequestMethod.getName(GETS), request);
 
-        return new StandardParser(GETS).setSession(session).parse(request);
+        standardParser.setMethod(GETS);
+        return standardParser.setSession(session).parse(request);
     }
 
     /**
@@ -69,7 +81,8 @@ public class Controller {
     public String heads(@RequestBody String request, HttpSession session) {
         log.info("进入 {} 方法，请求JSON串为：{}", RequestMethod.getName(HEADS), request);
 
-        return new StandardParser(HEADS).setSession(session).parse(request);
+        standardParser.setMethod(HEADS);
+        return standardParser.setSession(session).parse(request);
     }
 
     /**
@@ -79,7 +92,8 @@ public class Controller {
     public String post(@RequestBody String request, HttpSession session) {
         log.info("进入 {} 方法，请求JSON串为：{}", RequestMethod.getName(POST), request);
 
-        return new StandardParser(POST).setSession(session).parse(request);
+        standardParser.setMethod(POST);
+        return standardParser.setSession(session).parse(request);
     }
 
     /**
@@ -89,7 +103,8 @@ public class Controller {
     public String put(@RequestBody String request, HttpSession session) {
         log.info("进入 {} 方法，请求JSON串为：{}", RequestMethod.getName(PUT), request);
 
-        return new StandardParser(PUT).setSession(session).parse(request);
+        standardParser.setMethod(PUT);
+        return standardParser.setSession(session).parse(request);
     }
 
     /**
@@ -99,7 +114,8 @@ public class Controller {
     public String delete(@RequestBody String request, HttpSession session) {
         log.info("进入 {} 方法，请求JSON串为：{}", RequestMethod.getName(DELETE), request);
 
-        return new StandardParser(DELETE).setSession(session).parse(request);
+        standardParser.setMethod(DELETE);
+        return standardParser.setSession(session).parse(request);
     }
 
     /**

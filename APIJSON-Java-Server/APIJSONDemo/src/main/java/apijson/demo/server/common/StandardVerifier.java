@@ -56,6 +56,9 @@ public class StandardVerifier extends AbstractVerifier<Long> {
         return UtilConstants.Public.USER_.equals(table) || UtilConstants.Public.PRIVACY_.equals(table) ? UtilConstants.Reset.ID : getVisitorIdKey();
     }
 
+
+    //////////////////////////////////以下可以移动到工具类////////////////////////////////////////////////////////
+
     /**
      * 登录校验
      *

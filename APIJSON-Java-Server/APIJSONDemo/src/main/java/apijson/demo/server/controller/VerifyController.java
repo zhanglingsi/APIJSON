@@ -55,7 +55,7 @@ public class VerifyController {
         } catch (Exception e) {
         }
 
-        if (verify == null || JsonApiResponse.isSuccess(verify.getIntValue(JsonApiResponse.KEY_CODE)) == false) {
+        if (verify == null || !JsonApiResponse.isSuccess(verify.getIntValue(JsonApiResponse.KEY_CODE))) {
             new StandardParser(RequestMethod.DELETE, true).parseResponse(new JsonApiRequest(new Verify(type, phone)));
             return response;
         }

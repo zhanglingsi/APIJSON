@@ -81,11 +81,11 @@ public class ResetPassword {
             if (StringUtil.isEmpty(password, true)) {
                 type = Verify.TYPE_PAY_PASSWORD;
                 password = privacyObj.getString(UtilConstants.Balance._PAY_PASS_WORD);
-                if (StringUtil.isNumberPassword(password) == false) {
+                if (!StringUtil.isNumberPassword(password)) {
                     throw new IllegalArgumentException(UtilConstants.Public.PRIVACY_ + "/" + UtilConstants.Balance._PAY_PASS_WORD + ":value 中value不合法！");
                 }
             } else { //登录密码
-                if (StringUtil.isPassword(password) == false) {
+                if (!StringUtil.isPassword(password)) {
                     throw new IllegalArgumentException(UtilConstants.Public.PRIVACY_ + "/" + UtilConstants.Reset._PASS_WORD + ":value 中value不合法！");
                 }
             }

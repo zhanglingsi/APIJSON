@@ -89,7 +89,7 @@ public class Structure {
                             throw new IllegalArgumentException("POST请求，" + name + "/" + key + " 不能传 " + JsonApiObject.KEY_ID + " ！");
                         }
                     } else {
-                        if (RequestMethod.isQueryMethod(method) == false) {
+                        if (!RequestMethod.isQueryMethod(method)) {
                             verifyId(method.name(), name, key, robj, JsonApiObject.KEY_ID, maxUpdateCount, true);
                             verifyId(method.name(), name, key, robj, JsonApiObject.KEY_USER_ID, maxUpdateCount, false);
                         }

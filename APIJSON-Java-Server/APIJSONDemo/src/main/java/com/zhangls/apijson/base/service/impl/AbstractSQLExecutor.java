@@ -193,7 +193,7 @@ public abstract class AbstractSQLExecutor implements SqlExecutor {
 
             for (int i = 1; i <= length; i++) {
 
-                if (hasJoin && viceColumnStart > length && config.getSQLTable().equalsIgnoreCase(rsmd.getTableName(i)) == false) {
+                if (hasJoin && viceColumnStart > length && !config.getSQLTable().equalsIgnoreCase(rsmd.getTableName(i))) {
                     viceColumnStart = i;
                 }
 
@@ -345,16 +345,15 @@ public abstract class AbstractSQLExecutor implements SqlExecutor {
     protected JSONObject onPutColumn(@NotNull SqlConfig config, @NotNull ResultSet rs, @NotNull ResultSetMetaData rsmd
             , final int tablePosition, @NotNull JSONObject table, final int columnIndex, Map<String, JSONObject> childMap) throws Exception {
 
-        if (rsmd.getColumnName(columnIndex).startsWith("_")) {
+        String name = rsmd.getColumnName(columnIndex);
+        String lable = rsmd.getColumnLabel(columnIndex);
+        String tableName = rsmd.getTableName(columnIndex);
+
+        if (name.startsWith("_")) {
             return table;
         }
 
-        //已改为  rsmd.getTableName(columnIndex) 支持副表不传 @column ， 但如何判断是副表？childMap != null
-        //		String lable = rsmd.getColumnLabel(columnIndex);
-        //		int dotIndex = lable.indexOf(".");
-        String lable = rsmd.getColumnLabel(columnIndex);//dotIndex < 0 ? lable : lable.substring(dotIndex + 1);
-
-        String childTable = childMap == null ? null : rsmd.getTableName(columnIndex); //dotIndex < 0 ? null : lable.substring(0, dotIndex);
+        String childTable = childMap == null ? null : tableName;
 
         JSONObject finalTable = null;
         String childSql = null;
@@ -363,14 +362,11 @@ public abstract class AbstractSQLExecutor implements SqlExecutor {
         if (childTable == null) {
             finalTable = table;
         } else {
-            //			lable = column;
-
-            //<sql, Table>
-
             List<Join> joinList = config.getJoinList();
             if (joinList != null) {
                 for (Join j : joinList) {
-                    childConfig = j.isAppJoin() ? null : j.getCacheConfig(); //这里用config改了getSQL后再还原很麻烦，所以提前给一个config2更好
+                    //这里用config改了getSQL后再还原很麻烦，所以提前给一个config2更好
+                    childConfig = j.isAppJoin() ? null : j.getCacheConfig();
 
                     if (childConfig != null && childTable.equalsIgnoreCase(childConfig.getSQLTable())) {
 
@@ -381,7 +377,7 @@ public abstract class AbstractSQLExecutor implements SqlExecutor {
                             return table;
                         }
 
-                        finalTable = (JSONObject) childMap.get(childSql);
+                        finalTable = childMap.get(childSql);
                         break;
                     }
                 }
@@ -394,18 +390,12 @@ public abstract class AbstractSQLExecutor implements SqlExecutor {
         }
 
         Object value = rs.getObject(columnIndex);
-        //					Log.d(TAG, "name:" + rsmd.getColumnName(i));
-        //					Log.d(TAG, "lable:" + rsmd.getColumnLabel(i));
-        //					Log.d(TAG, "type:" + rsmd.getColumnType(i));
-        //					Log.d(TAG, "typeName:" + rsmd.getColumnTypeName(i));
 
-        //				Log.i(TAG, "select  while (rs.next()) { >> for (int i = 0; i < length; i++) {"
-        //						+ "\n  >>> value = " + value);
-
-        if (value != null) { //数据库查出来的null和empty值都有意义，去掉会导致 Moment:{ @column:"content" } 部分无结果及中断数组查询！
+        //数据库查出来的null和empty值都有意义，去掉会导致 Moment:{ @column:"content" } 部分无结果及中断数组查询！
+        if (value != null) {
             if (value instanceof Timestamp) {
-                value = ((Timestamp) value).toString();
-            } else if (value instanceof String && isJSONType(rsmd, columnIndex)) { //json String
+                value = value.toString();
+            } else if (value instanceof String && isJSONType(rsmd, columnIndex)) {
                 value = JSON.parse((String) value);
             }
         }
@@ -435,7 +425,7 @@ public abstract class AbstractSQLExecutor implements SqlExecutor {
 
 
     /**
-     * 判断是否为JSON类型
+     * 判断数据库字段类型：是否为JSON类型
      *
      * @param rsmd
      * @param position

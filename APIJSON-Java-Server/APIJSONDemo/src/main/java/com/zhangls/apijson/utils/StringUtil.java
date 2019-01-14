@@ -383,7 +383,7 @@ public class StringUtil {
      * @return
      */
     public static boolean isPhone(String phone) {
-        if (isNotEmpty(phone, true) == false) {
+        if (!isNotEmpty(phone, true)) {
             return false;
         }
 
@@ -418,7 +418,7 @@ public class StringUtil {
      * @return
      */
     public static boolean isEmail(String email) {
-        if (isNotEmpty(email, true) == false) {
+        if (!isNotEmpty(email, true)) {
             return false;
         }
 
@@ -444,7 +444,7 @@ public class StringUtil {
      * @return
      */
     public static boolean isNumer(String s) {
-        if (isNotEmpty(s, true) == false) {
+        if (!isNotEmpty(s, true)) {
             return false;
         }
 
@@ -495,7 +495,7 @@ public class StringUtil {
      */
     public static boolean isBigName(String s) {
         s = getString(s);
-        if (s.isEmpty() || PATTERN_ALPHA_BIG.matcher(s.substring(0, 1)).matches() == false) {
+        if (s.isEmpty() || !PATTERN_ALPHA_BIG.matcher(s.substring(0, 1)).matches()) {
             return false;
         }
         return s.length() <= 1 ? true : isName(s.substring(1));
@@ -509,7 +509,7 @@ public class StringUtil {
      */
     public static boolean isSmallName(String s) {
         s = getString(s);
-        if (s.isEmpty() || PATTERN_ALPHA_SMALL.matcher(s.substring(0, 1)).matches() == false) {
+        if (s.isEmpty() || !PATTERN_ALPHA_SMALL.matcher(s.substring(0, 1)).matches()) {
             return false;
         }
         return s.length() <= 1 ? true : isName(s.substring(1));
@@ -523,7 +523,7 @@ public class StringUtil {
      * @return
      */
     public static boolean isIDCard(String number) {
-        if (isNumberOrAlpha(number) == false) {
+        if (!isNumberOrAlpha(number)) {
             return false;
         }
         number = getString(number);
@@ -552,7 +552,7 @@ public class StringUtil {
      * @return
      */
     public static boolean isUrl(String url) {
-        if (isNotEmpty(url, true) == false) {
+        if (!isNotEmpty(url, true)) {
             return false;
         } else if (!url.startsWith(URL_PREFIX) && !url.startsWith(URL_PREFIXs)) {
             return false;
@@ -584,7 +584,7 @@ public class StringUtil {
      */
     public static boolean isPath(String path) {
         return StringUtil.isNotEmpty(path, true) && path.contains(SEPARATOR)
-                && path.contains(SEPARATOR + SEPARATOR) == false && path.endsWith(SEPARATOR) == false;
+                && !path.contains(SEPARATOR + SEPARATOR) && !path.endsWith(SEPARATOR);
     }
 
     /**
@@ -594,7 +594,7 @@ public class StringUtil {
      * @return
      */
     public static boolean isFilePath(String path) {
-        if (isNotEmpty(path, true) == false) {
+        if (!isNotEmpty(path, true)) {
             return false;
         }
 
@@ -650,7 +650,7 @@ public class StringUtil {
      * @return
      */
     public static String getNumber(String s, boolean onlyStart) {
-        if (isNotEmpty(s, true) == false) {
+        if (!isNotEmpty(s, true)) {
             return "";
         }
 
@@ -681,7 +681,7 @@ public class StringUtil {
      * @return
      */
     public static String getCorrectUrl(String url) {
-        if (isNotEmpty(url, true) == false) {
+        if (!isNotEmpty(url, true)) {
             return "";
         }
 

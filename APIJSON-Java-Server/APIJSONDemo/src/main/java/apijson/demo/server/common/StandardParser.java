@@ -6,6 +6,7 @@ import com.zhangls.apijson.base.JsonApiRequest;
 import com.zhangls.apijson.base.model.RequestMethod;
 import com.zhangls.apijson.base.service.SqlConfig;
 import com.zhangls.apijson.base.service.impl.AbstractParser;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
 
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpSession;
  * Created by zhangls on 2019/1/2.
  * @author zhangls
  */
+@Component
 public class StandardParser extends AbstractParser<Long> {
 
 
@@ -91,12 +93,12 @@ public class StandardParser extends AbstractParser<Long> {
             //TODO 删除，onPUTArrayParse改用MySQL函数JSON_ADD, JSON_REMOVE等
             @Override
             public JSONObject parseResponse(JsonApiRequest request) throws Exception {
-                StandardParser demoParser = new StandardParser(RequestMethod.GET);
-                demoParser.setSession(session);
+                StandardParser standardParser = new StandardParser(RequestMethod.GET);
+                standardParser.setSession(session);
                 //parser.setNoVerifyRequest(noVerifyRequest)
-                demoParser.setNoVerifyLogin(noVerifyLogin);
-                demoParser.setNoVerifyRole(noVerifyRole);
-                return demoParser.parseResponse(request);
+                standardParser.setNoVerifyLogin(noVerifyLogin);
+                standardParser.setNoVerifyRole(noVerifyRole);
+                return standardParser.parseResponse(request);
             }
         }.setMethod(requestMethod).setParser(this);
     }
