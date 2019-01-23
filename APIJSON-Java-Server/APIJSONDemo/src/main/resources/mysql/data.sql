@@ -6,10 +6,10 @@ INSERT INTO TB_USER (USER_CODE,LOGIN_NAME, LOGIN_PASSWORD, REAL_NAME,USER_SEX, E
 VALUES ('REG2019012312341200001','zhangsan', '123456', '张三', '1','zhangsan@member.com', '13712345679', '河南郑州', '0', '我是JAVA程序员','[1002,1003]','["http://static.oschina.net/uploads/user/1218/2437072_100.jpg?t=1461076033000", "http://common.cnblogs.com/images/icon_weibo_24.png"]');
 
 INSERT INTO TB_USER (USER_CODE,LOGIN_NAME, LOGIN_PASSWORD, REAL_NAME,USER_SEX, EMAIL, CELL_PHONE, ADDRESS, USER_TYPE, USER_TAG,CONTACTID_LIST,PICTURE_LIST)
-VALUES ('REG2019012312341200001','lisi', '123456', '李四', '1','lisi@member.com', '13812345679', '河南郑州', '0', '我是PHP程序员','[1001]','["http://static.oschina.net/uploads/user/1218/2437072_100.jpg?t=1461076033000", "http://common.cnblogs.com/images/icon_weibo_24.png"]');
+VALUES ('REG2019012312341200002','lisi', '123456', '李四', '1','lisi@member.com', '13812345679', '河南郑州', '0', '我是PHP程序员','[1001]','["http://static.oschina.net/uploads/user/1218/2437072_100.jpg?t=1461076033000", "http://common.cnblogs.com/images/icon_weibo_24.png"]');
 
 INSERT INTO TB_USER (USER_CODE,LOGIN_NAME, LOGIN_PASSWORD, REAL_NAME,USER_SEX, EMAIL, CELL_PHONE, ADDRESS, USER_TYPE, USER_TAG,CONTACTID_LIST,PICTURE_LIST)
-VALUES ('REG2019012312341200001','wangwu', 'member123', '王五', '1','wangwu@member.com', '13912345679', '河南郑州', '0', '我是C++程序员','[1001,1002]','["http://static.oschina.net/uploads/user/1218/2437072_100.jpg?t=1461076033000", "http://common.cnblogs.com/images/icon_weibo_24.png"]');
+VALUES ('REG2019012312341200003','wangwu', 'member123', '王五', '1','wangwu@member.com', '13912345679', '河南郑州', '0', '我是C++程序员','[1001,1002]','["http://static.oschina.net/uploads/user/1218/2437072_100.jpg?t=1461076033000", "http://common.cnblogs.com/images/icon_weibo_24.png"]');
 COMMIT ;
 
 
