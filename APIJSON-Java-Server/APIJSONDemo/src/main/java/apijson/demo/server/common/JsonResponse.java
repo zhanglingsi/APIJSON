@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.Serializable;
 
 /**
+ *
+ * 状态码，分页信息，数据详情，字段描述
  * Created by zhangls on 2019/1/23.
  *
  * @author zhangls
