@@ -263,7 +263,7 @@ public abstract class AbstractParser<T> implements Parser<T>, SqlCreator {
         // 创建验证器接口
         verifier = createVerifier().setVisitor(getVisitor());
 
-        if (RequestMethod.isPublicMethod(requestMethod).equals(Boolean.FALSE)) {
+        if (!RequestMethod.isPublicMethod(requestMethod)) {
             try {
                 if (!noVerifyLogin) {
                     onVerifyLogin();

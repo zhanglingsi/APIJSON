@@ -305,7 +305,7 @@ public class JsonApi {
         if (obj instanceof String) {
             try {
                 JSONArray json = parseArray((String) obj);
-                return json != null && json.isEmpty() == false;
+                return json != null && !json.isEmpty();
             } catch (Exception e) {
                 log.error("转换异常：{}", e.getMessage());
             }

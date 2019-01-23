@@ -31,6 +31,10 @@ public class StandardInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler) throws Exception {
         log.info("【StandardInterceptor请求拦截器预处理方法】：{}", "preHandle");
+        String[] strings = req.getRequestURI().split("/");
+        log.info("【进入 getDataJson 方法，请求apiCode为】：{}", strings[2]);
+        log.info("【进入 getDataJson 方法，请求apiId为】：{}", strings[3]);
+        log.info("【进入 getDataJson 方法，请求token为】：{}", strings[4]);
 
         return true;
     }

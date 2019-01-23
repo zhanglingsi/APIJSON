@@ -14,7 +14,6 @@ import javax.servlet.http.HttpSession;
 
 import apijson.demo.server.common.StandardParser;
 import apijson.demo.server.common.UtilConstants;
-import apijson.demo.server.demo.DemoParser;
 import com.zhangls.apijson.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,6 @@ public class Controller {
 
     @Autowired
     private StandardParser standardParser;
-    @Autowired
-    private DemoParser parser;
 
     /**
      * 获取 查询
@@ -48,8 +45,6 @@ public class Controller {
 
         standardParser.setMethod(GET);
         return standardParser.setSession(session).parse(request);
-//        parser.setMethod(GET);
-//        return parser.parse(request);
     }
 
     /**

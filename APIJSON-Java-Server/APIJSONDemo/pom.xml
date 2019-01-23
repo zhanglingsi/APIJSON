@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.21</version>
+            <version>1.2.55</version>
         </dependency>
 
         <dependency>
@@ -146,6 +146,7 @@
                     <include>**/*.xml</include>
                     <include>**/*.properties</include>
                     <include>**/*.yml</include>
+                    <include>**/*.sql</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>

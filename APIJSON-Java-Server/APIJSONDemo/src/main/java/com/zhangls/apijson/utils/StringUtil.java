@@ -12,10 +12,6 @@ import java.util.regex.Pattern;
  * @use StringUtil.
  */
 public class StringUtil {
-    private static final String TAG = "StringUtil";
-
-    public StringUtil() {
-    }
 
     public static final String UTF_8 = "utf-8";
 
@@ -61,8 +57,6 @@ public class StringUtil {
         return currentString == null ? "" : currentString;
     }
 
-    //获取string,为null时返回"" <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
     /**
      * 获取string,为null则返回""
      *
@@ -70,6 +64,7 @@ public class StringUtil {
      * @return
      */
     public static String getString(Object object) {
+
         return object == null ? "" : object.toString();
     }
 

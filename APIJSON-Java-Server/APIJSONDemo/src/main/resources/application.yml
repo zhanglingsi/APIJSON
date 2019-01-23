@@ -10,8 +10,8 @@ logging:
 
 spring:
     datasource:
-        name: apijson
-        url: jdbc:mysql://127.0.0.1:3306/apijson?useUnicode=true&useSSL=false&characterEncoding=UTF-8
+        name: super_app
+        url: jdbc:mysql://127.0.0.1:3306/super_app?useUnicode=true&useSSL=false&characterEncoding=UTF-8
         username: root
         password: 123456
         # 使用druid数据源
@@ -30,6 +30,12 @@ spring:
         testOnReturn: false
         poolPreparedStatements: true
         maxOpenPreparedStatements: 20
+
+        schema:
+          classpath:mysql/schema.sql
+        data:
+          classpath:mysql/data.sql
+        platform: mysql
     http:
         encoding:
         force: true

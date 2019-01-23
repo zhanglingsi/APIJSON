@@ -16,7 +16,6 @@ public interface UtilConstants {
      * 公共常量
      */
     class Public {
-        private static final String TAG = "Controller";
         public static final String VERIFY_ = Verify.class.getSimpleName();
         public static final String USER_ = User.class.getSimpleName();
         public static final String PRIVACY_ = Privacy.class.getSimpleName();

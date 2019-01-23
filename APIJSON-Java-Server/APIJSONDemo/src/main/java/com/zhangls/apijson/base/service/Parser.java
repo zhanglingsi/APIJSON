@@ -23,7 +23,7 @@ public interface Parser<T> {
     Integer MAX_UPDATE_COUNT = 10;
 
     /**
-     * 用户好有列表，访问者列表
+     * 用户好友列表，访问者列表
      * @return
      */
     @NotNull

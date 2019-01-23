@@ -223,7 +223,7 @@ public abstract class AbstractObjectParser implements ObjectParser {
             Set<Entry<String, Object>> set = Sets.newLinkedHashSet(request.entrySet());
 
             //判断换取少几个变量的初始化是否值得？
-            if (set != null && set.isEmpty() == false) {
+            if (set != null && !set.isEmpty()) {
                 //非Table下必须保证原有顺序！否则 count,page 会丢, total@:"/[]/total" 会在[]:{}前执行！
                 if (isTable) {
                     customMap = Maps.newLinkedHashMap();
@@ -268,7 +268,7 @@ public abstract class AbstractObjectParser implements ObjectParser {
 
                     try {
                         //JSONObject，往下一级提取
-                        if (value instanceof JSONObject && key.startsWith("@") == false) {
+                        if (value instanceof JSONObject && !key.startsWith("@")) {
                             //添加到childMap，最后再解析
                             if (childMap != null) {
                                 childMap.put(key, (JSONObject) value);
