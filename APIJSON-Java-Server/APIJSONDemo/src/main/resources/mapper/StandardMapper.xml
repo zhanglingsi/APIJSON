@@ -19,4 +19,8 @@
         SELECT * FROM apijson_privacy WHERE phone=#{value} LIMIT 1 OFFSET 0;
     </select>
 
+    <select id="queryUserByName" parameterType="apijson.demo.server.model.LoginVo" resultType="java.util.LinkedHashMap">
+        SELECT * FROM TB_USER WHERE LOGIN_NAME=#{userName} and LOGIN_PASSWORD=#{password} LIMIT 1 OFFSET 0;
+    </select>
+
 </mapper>

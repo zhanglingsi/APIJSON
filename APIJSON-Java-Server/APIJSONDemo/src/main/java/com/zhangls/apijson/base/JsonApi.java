@@ -90,8 +90,9 @@ public class JsonApi {
      * @return
      */
     public static JSONObject parseObject(String json) {
-        int features = com.alibaba.fastjson.JSON.DEFAULT_PARSER_FEATURE;
+        int features = JSON.DEFAULT_PARSER_FEATURE;
         features |= Feature.OrderedField.getMask();
+
         return parseObject(json, features);
     }
 
@@ -104,7 +105,7 @@ public class JsonApi {
      */
     public static JSONObject parseObject(String json, int features) {
         try {
-            return com.alibaba.fastjson.JSON.parseObject(getCorrectJson(json), JSONObject.class, features);
+            return JSON.parseObject(getCorrectJson(json), JSONObject.class, features);
         } catch (Exception e) {
             log.error("转换异常：{}", e.getMessage());
         }
@@ -124,19 +125,57 @@ public class JsonApi {
 
     /**
      * json转实体类
+     * 一个组件中可能有很多特性需要支持，但在实际应用中却需要根据使用组件之人的喜好进行配置。比如在 FastJSON 组件中就有以下特性可由使用者自主选择：
+     * AutoCloseSource, 自动关闭源
+     * AllowComment, 支持注释
+     * AllowUnQuotedFieldNames, 支持未引用的字段名
+     * AllowSingleQuotes, 支持单引号
+     * InternFieldNames,
+     * AllowISO8601DateFormat, 支持ISO8601格式的日期
+     * AllowArbitraryCommas, 支持任意多个逗号
+     * UseBigDecimal, 使用大数
+     * IgnoreNotMatch, 忽略不匹配的
+     * SortFeidFastMatch,
+     * DisableASM,
+     * DisableCircularReferenceDetect, 关闭循环引用发现
+     * InitStringFieldAsEmpty, 初始化字符串字段为 空字符串
+     * SupportArrayToBean, 支持由数组转换成Bean对象
+     * OrderedField, 按字段排序
+     * DisableSpecialKeyDetect,
+     * UseObjectArray,
+     * SupportNonPublicField, 支持非 public 字段
+     * IgnoreAutoType, 忽略自动类型
+     * DisableFieldSmartMatch,  关闭字段的智能匹配特性
+     * SupportAutoType, 支持自动类型
+     * NonStringKeyAsString,
+     * CustomMapDeserializer,
      *
-     * @param json
-     * @param clazz
+     * fastjson默认开启的如下：
+     * int features = 0;
+     * features |= Feature.AutoCloseSource.getMask();
+     * features |= Feature.InternFieldNames.getMask();
+     * features |= Feature.UseBigDecimal.getMask();
+     * features |= Feature.AllowUnQuotedFieldNames.getMask();
+     * features |= Feature.AllowSingleQuotes.getMask();
+     * features |= Feature.AllowArbitraryCommas.getMask();
+     * features |= Feature.SortFeidFastMatch.getMask();
+     * features |= Feature.IgnoreNotMatch.getMask();
+     * DEFAULT_PARSER_FEATURE = features;
+     *
+     * @param jsonStr 需要转换的jsonStr
+     * @param clazz 需要转换的目标类类型
      * @return
      */
-    public static <T> T parseObject(String json, Class<T> clazz) {
+    public static <T> T parseObject(String jsonStr, Class<T> clazz) {
         if (clazz == null) {
             log.error("参数类型异常：{}", clazz);
         } else {
             try {
+                // 获取默认的配置
                 int features = JSON.DEFAULT_PARSER_FEATURE;
+                // 开启 OrderedField, 按字段排序
                 features |= Feature.OrderedField.getMask();
-                return com.alibaba.fastjson.JSON.parseObject(getCorrectJson(json), clazz, features);
+                return JSON.parseObject(getCorrectJson(jsonStr), clazz, features);
             } catch (Exception e) {
                 log.error("转换异常：{}", e.getMessage());
             }

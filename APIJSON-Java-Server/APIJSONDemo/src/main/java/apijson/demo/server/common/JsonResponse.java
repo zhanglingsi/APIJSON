@@ -1,15 +1,17 @@
 package apijson.demo.server.common;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.google.common.base.MoreObjects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
- *
  * 状态码，分页信息，数据详情，字段描述
  * Created by zhangls on 2019/1/23.
  *
@@ -17,12 +19,15 @@ import java.io.Serializable;
  */
 @Slf4j
 @NoArgsConstructor
-public class JsonResponse<T extends Response> implements Serializable {
+public class JsonResponse<T> implements Serializable {
 
     private static final long serialVersionUID = 8350327877975282483L;
 
+    private static final String JSON_FORMAT_DATE = "yyyy-MM-dd HH:mm:ss";
+
     @Getter
     @Setter
+    @JSONField(name = "success", ordinal = 1, serialize = false)
     private Boolean success;
 
     /**
@@ -50,17 +55,25 @@ public class JsonResponse<T extends Response> implements Serializable {
     @Setter
     private Boolean hasFile;
 
+    @JSONField(format = JSON_FORMAT_DATE, ordinal = 2)
+    private Date date = new Date();
+
     /**
      * 结果数据
      */
     @Getter
     @Setter
-    private T result;
+    private T data;
+
+    @Getter
+    @Setter
+    @JSONField(name = "reqMeta")
+    private JsonRequest jsonReq;
 
 
-    public JsonResponse(T result) {
+    public JsonResponse(T data) {
         this.success = Boolean.TRUE;
-        this.result = result;
+        this.data = data;
     }
 
     public JsonResponse(String errorCode, String errorMsg) {
@@ -69,11 +82,11 @@ public class JsonResponse<T extends Response> implements Serializable {
         this.errorMsg = errorMsg;
     }
 
-    public JsonResponse(String errorCode, String errorMsg, T result) {
+    public JsonResponse(String errorCode, String errorMsg, T data) {
         this.success = Boolean.FALSE;
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;
-        this.result = result;
+        this.data = data;
     }
 
     @Override
@@ -93,7 +106,7 @@ public class JsonResponse<T extends Response> implements Serializable {
         if (!errorCode.equals(response.errorCode)) {
             return false;
         }
-        if (!result.equals(response.result)) {
+        if (!data.equals(response.data)) {
             return false;
         }
 
@@ -103,7 +116,7 @@ public class JsonResponse<T extends Response> implements Serializable {
     @Override
     public int hashCode() {
         int result1 = (success ? 1 : 0);
-        result1 = 31 * result1 + result.hashCode();
+        result1 = 31 * result1 + data.hashCode();
         result1 = 31 * result1 + errorCode.hashCode();
         return result1;
     }
@@ -112,7 +125,7 @@ public class JsonResponse<T extends Response> implements Serializable {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("success", success)
-                .add("result", result)
+                .add("data", data)
                 .add("errorCode", errorCode)
                 .add("errorMsg", errorMsg)
                 .omitNullValues()

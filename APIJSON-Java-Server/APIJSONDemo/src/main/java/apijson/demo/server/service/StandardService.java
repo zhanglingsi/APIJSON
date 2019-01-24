@@ -1,5 +1,7 @@
 package apijson.demo.server.service;
 
+import apijson.demo.server.common.JsonResponse;
+import apijson.demo.server.model.LoginVo;
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -21,4 +23,12 @@ public interface StandardService {
      * @return 查询结果 json串
      */
     JSONObject insertService(JSONObject reqJson);
+
+    /**
+     * 登陆接口
+     * @param vo
+     * @return
+     */
+    JsonResponse loginService(LoginVo vo);
+
 }

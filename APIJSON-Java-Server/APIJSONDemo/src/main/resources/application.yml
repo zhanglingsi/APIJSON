@@ -38,9 +38,8 @@ spring:
         platform: mysql
     http:
         encoding:
-        force: true
-        charset: UTF-8
-
+          force: true
+          charset: UTF-8
 
 mybatis:
     mapper-locations: classpath:mapper/*Mapper.xml

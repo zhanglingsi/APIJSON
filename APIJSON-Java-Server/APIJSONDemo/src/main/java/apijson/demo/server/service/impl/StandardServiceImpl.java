@@ -1,7 +1,9 @@
 package apijson.demo.server.service.impl;
 
 
+import apijson.demo.server.common.JsonResponse;
 import apijson.demo.server.mapper.StandardMapper;
+import apijson.demo.server.model.LoginVo;
 import apijson.demo.server.service.StandardService;
 import apijson.demo.server.utils.JsonParseUtils;
 import com.alibaba.fastjson.JSONObject;
@@ -47,5 +49,11 @@ public class StandardServiceImpl implements StandardService {
     @Override
     public JSONObject insertService(JSONObject reqJson) {
         return null;
+    }
+
+    @Override
+    public JsonResponse loginService(LoginVo vo) {
+        LinkedHashMap<String,Object> ls = mapper.queryUserByName(vo);
+        return new JsonResponse(ls);
     }
 }

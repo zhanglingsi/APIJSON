@@ -53,15 +53,7 @@ public class StandardFilter implements Filter {
         log.debug("【请求方法Method】：{}", request.getMethod());
         log.debug("【####请求信息#####################################################################】");
 
-        log.debug("【####请求头信息#####################################################################】");
-        Enumeration<String> reqHeadInfo = request.getHeaderNames();
-        while (reqHeadInfo.hasMoreElements()) {
-            String headName = String.valueOf(reqHeadInfo.nextElement());
-            String headValue = request.getHeader(headName);
-            log.debug("【请求头信息】【{}】：【{}】", headName, headValue);
-        }
 
-        log.debug("【####请求头信息#####################################################################】");
 
         chain.doFilter(request, response);
     }

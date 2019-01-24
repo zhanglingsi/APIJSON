@@ -1,6 +1,7 @@
 package apijson.demo.server.mapper;
 
 
+import apijson.demo.server.model.LoginVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.LinkedHashMap;
@@ -42,5 +43,13 @@ public interface StandardMapper {
      * @return
      */
     LinkedHashMap<String, Object> queryUserByPhone(String phone);
+
+
+    /**
+     * 登陆时 查询用户密码表记录
+     * @param vo
+     * @return
+     */
+    LinkedHashMap<String, Object> queryUserByName(LoginVo vo);
 
 }
