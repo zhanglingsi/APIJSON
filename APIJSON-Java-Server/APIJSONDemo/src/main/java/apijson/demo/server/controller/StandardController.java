@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * 生成token服务 POST请求  参数 userName (登陆用户名), password (登陆密码), ip (访问IP), time(token超时时间)
+ * 调用格式 1 > http://IP:PORT/api/generateToken
+ *         {"data":"WupXwe45MOAJ0M3fBnCu2CN_XSVb6fGXN4XyoA79B-8","code":"20000","message":"成功"}
+ *
+ *
  * 标准查询Controller 查询资源 共有8种，如下：
  *
  * 1. 标准统一查询接口：返回多种数据 apiName : 服务名 ，apiId ：服务编号（版本号） token ：JWT生成的签名字符串
@@ -37,6 +42,8 @@ import javax.servlet.http.HttpServletRequest;
  *               }
  *            }
  *
+ * 5. 字段及相关字典列表查询
+ *    调用格式 1 > http://IP:PORT/api/{apiName}/{apiId}/{token}/structuredData
  *
  * 获取数据接口（服务可用时间为工作日8:00 - 18:00）
  * Created by zhangls on 2019/1/7.
@@ -52,6 +59,16 @@ public class StandardController {
 
     @Autowired
     private StandardService service;
+
+    /**
+     * 生成token
+     * @param reqJson 参数 userName (登陆用户名), password (登陆密码), ip (访问IP), time(token超时时间)
+     * @return
+     */
+    public String generateToken(@RequestBody String reqJson){
+        return null;
+    }
+
 
     /**
      * 获取 查询
@@ -87,6 +104,18 @@ public class StandardController {
      * 连接运算符	   描述
      * and	       且
      * or	       或
+     *
+     * 每个字段的可选查询条件范围参照title列表里面对应字段的filterType字段，根据字段支持的查询运算符进行查询，支持简单查询、组合查询。
+     *
+     * "title":[ //数据字典
+     *           {
+     *           "dataCode":"xm",//字段名
+     *           "dataName":"姓名",//信息项名称
+     *           "filterType":"like;eq",//支持的查询运算符 该字段可like和eq
+     *           "dicTable":"",//字段字典：{'原始值':'字典映射值'}
+     *           "shareKind":"",//共享类型（1：无条件共享，2：有条件共享）
+     *           }
+     *         ]
      *
      */
     @PostMapping("/{apiName}/{apiId}/{token}/getDataJson")
