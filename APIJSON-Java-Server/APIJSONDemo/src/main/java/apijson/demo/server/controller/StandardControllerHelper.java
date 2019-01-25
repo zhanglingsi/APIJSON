@@ -2,9 +2,11 @@ package apijson.demo.server.controller;
 
 import apijson.demo.server.common.JsonResponse;
 import apijson.demo.server.common.RespCode;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zhangls.apijson.base.JsonApi;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 
 import java.util.Optional;
 
@@ -56,6 +58,20 @@ public class StandardControllerHelper {
         obj.put("time", Optional.ofNullable(obj.getLong("time")).orElse(86400L));
 
         return new JsonResponse(obj);
+    }
+
+
+    public static String jsonToString(JsonResponse response){
+        return JSON.toJSONString(response, true);
+    }
+
+
+    public static String addTimeInfo(JsonResponse response, Long startTime, Long endTime){
+        response.setReqTime(new DateTime(startTime).toDate());
+        response.setResTime(new DateTime(endTime).toDate());
+        response.setCostTime(endTime-startTime);
+
+        return jsonToString(response);
     }
 
 }

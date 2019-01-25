@@ -1,7 +1,7 @@
 package apijson.demo.server.utils;
 
 import apijson.demo.server.common.UtilConstants;
-import com.google.common.collect.ImmutableMap;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -14,7 +14,6 @@ import org.joda.time.DateTime;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
-import java.security.Key;
 import java.util.Map;
 import java.util.UUID;
 
@@ -44,11 +43,14 @@ public class JwtUtils {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(UtilConstants.Jwt.JWT_KEY);
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+//        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
+        // jwt的签发时间
         DateTime now = DateTime.now();
+        // 设置过期时间
         DateTime exp = now.plusSeconds(seconds);
 
+        // 生成key
         javax.crypto.SecretKey key = generalKey();
 
         JwtBuilder jwtBuilder = Jwts.builder()
@@ -63,11 +65,20 @@ public class JwtUtils {
                 //sub(Subject)：代表这个JWT的主体，即它的所有人，这个是一个json格式的字符串，可以存放什么userid，roldid之类的，作为什么用户的唯一标志。
                 .setSubject(subject)
                 //设置签名使用的签名算法和签名使用的秘钥
-                .signWith(SignatureAlgorithm.HS256, key);
+                .signWith(signatureAlgorithm, key);
 
         return UtilConstants.Jwt.JWT_BEARER + jwtBuilder.compact();
     }
 
+    /**
+     * 创建 Claims
+     * @param userInfo
+     * @return
+     */
+    public static Map<String, Object> createClaims(JSONObject userInfo){
+
+        return JSONObject.toJavaObject(userInfo, Map.class);
+    }
     /**
      * JWTToken刷新生命周期
      * 1、登录成功后将用户的JWT生成的Token作为k、v存储到cache缓存里面(这时候k、v值一样)

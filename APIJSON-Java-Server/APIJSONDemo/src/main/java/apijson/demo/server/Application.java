@@ -60,7 +60,7 @@ public class Application extends WebMvcConfigurerAdapter {
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
 //        configurer.favorPathExtension(false);
-        configurer.useJaf(false);
+//        configurer.useJaf(false);
     }
 
     @Bean
@@ -75,8 +75,8 @@ public class Application extends WebMvcConfigurerAdapter {
         fastConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
         //规则赋予转换对象
         fastConverter.setFastJsonConfig(fastJsonConfig);
-        StringHttpMessageConverter converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
-        return new HttpMessageConverters(fastConverter, converter);
+
+        return new HttpMessageConverters(fastConverter, new StringHttpMessageConverter(Charset.forName("UTF-8")));
     }
 
     public static void main(String[] args) throws Exception {

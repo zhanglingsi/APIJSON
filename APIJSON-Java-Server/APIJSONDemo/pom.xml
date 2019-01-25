@@ -147,6 +147,7 @@
                     <include>**/*.properties</include>
                     <include>**/*.yml</include>
                     <include>**/*.sql</include>
+                    <include>**/*.txt</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>

@@ -77,6 +77,7 @@ public class StandardInterceptor implements HandlerInterceptor {
             jsonObject.put("errorCode", RespCode.ERROR_CONTENT_TYPE.getResCode());
             jsonObject.put("errorMsg", RespCode.ERROR_CONTENT_TYPE.getResDesc());
             StandardInterceptor.responseJson(res, jsonObject);
+            return false;
         }
         log.debug("【####请求头信息#####################################################################】");
 
@@ -106,21 +107,6 @@ public class StandardInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private static void responseJson(HttpServletResponse res, JSONObject jsonObject) {
-        res.setCharacterEncoding(UTF8);
-        res.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        PrintWriter out = null;
-
-        try {
-            out = res.getWriter();
-            out.append(jsonObject.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            out.close();
-        }
-    }
-
     /**
      * 后处理回调方法，实现处理器（controller）的后处理，但在渲染视图之前
      * 此时我们可以通过modelAndView对模型数据进行处理或对视图进行处理
@@ -141,6 +127,28 @@ public class StandardInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest req, HttpServletResponse res, Object handler, Exception e) throws Exception {
         log.info("【请求拦截器处理完毕回调方法】：{}", "afterCompletion");
+
+    }
+
+
+    /**
+     * 不符合要求的request，直接返回response
+     * @param res
+     * @param jsonObject
+     */
+    private static void responseJson(HttpServletResponse res, JSONObject jsonObject) {
+        res.setCharacterEncoding(UTF8);
+        res.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        PrintWriter out = null;
+
+        try {
+            out = res.getWriter();
+            out.append(jsonObject.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            out.close();
+        }
     }
 
 

@@ -1,19 +1,21 @@
 package apijson.demo.server.controller;
 
 
+import apijson.demo.server.common.JsonRequest;
 import apijson.demo.server.common.JsonResponse;
-import apijson.demo.server.common.RespCode;
 import apijson.demo.server.model.LoginVo;
 import apijson.demo.server.service.StandardService;
+import apijson.demo.server.utils.JwtUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
+import java.util.Map;
 
 /**
  * 生成token服务 POST请求  参数 userName (登陆用户名), password (登陆密码), ip (访问IP), time(token超时时间)
@@ -66,36 +68,6 @@ public class StandardController {
     private StandardService service;
 
     /**
-     * 生成token
-     *
-     * @param reqJson 参数 userName (必填-登陆用户名), password (必填-登陆密码),
-     *                ip (必填-访问IP), time(选填默认24小时<86400秒>-token超时时间)
-     * @return
-     */
-    @PostMapping("/generateToken")
-    public JsonResponse generateToken(@RequestBody String reqJson) {
-        JsonResponse<JSONObject> jsonRes = StandardControllerHelper.checkJsonFormat(reqJson);
-        if (!jsonRes.getSuccess()) {
-            return jsonRes;
-        }
-
-        JSONObject obj = jsonRes.getData();
-
-        log.info("【生成token】{},", obj);
-
-        JsonResponse res = service.loginService(JSON.toJavaObject(obj, LoginVo.class));
-
-        if(!res.getSuccess()){
-            return jsonRes;
-        }
-
-
-
-        return jsonRes;
-    }
-
-
-    /**
      * 获取 查询
      * <p>
      * eg. 查询tb_product 商品信息  主表  关联 tb_pro_type 商品类型表
@@ -143,7 +115,7 @@ public class StandardController {
      * ]
      */
     @PostMapping("/{apiName}/{apiId}/{token}/getDataJson")
-    public JsonResponse getDataJson(@RequestBody String queryStr,
+    public String getDataJson(@RequestBody String queryStr,
                                     @PathVariable String apiName,
                                     @PathVariable String apiId,
                                     @PathVariable String token,

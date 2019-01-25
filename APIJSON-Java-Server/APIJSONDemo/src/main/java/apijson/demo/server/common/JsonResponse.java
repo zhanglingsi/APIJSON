@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -23,11 +22,11 @@ public class JsonResponse<T> implements Serializable {
 
     private static final long serialVersionUID = 8350327877975282483L;
 
-    private static final String JSON_FORMAT_DATE = "yyyy-MM-dd HH:mm:ss";
+    private static final String JSON_FORMAT_DATE = "yyyy-MM-dd HH:mm:ss.SSS";
 
     @Getter
     @Setter
-    @JSONField(name = "success", ordinal = 1, serialize = false)
+    @JSONField(name = "success", ordinal = 1)
     private Boolean success;
 
     /**
@@ -35,28 +34,41 @@ public class JsonResponse<T> implements Serializable {
      */
     @Getter
     @Setter
+    @JSONField(name = "errorCode")
     private String errorCode;
 
     @Getter
     @Setter
+    @JSONField(name = "errorMsg")
     private String errorMsg;
 
+    @Getter
+    @Setter
+    @JSONField(name = "option")
+    private ServiceOption serviceOption;
+
     /**
-     * 是否可以查询
+     * 请求的时间
      */
     @Getter
     @Setter
-    private Boolean hasSearch;
+    @JSONField(name = "reqTime", format = JSON_FORMAT_DATE, ordinal = 2)
+    private Date reqTime;
 
     /**
-     * 是否是文件服务
+     * 相应的时间
      */
     @Getter
     @Setter
-    private Boolean hasFile;
+    @JSONField(name = "resTime", format = JSON_FORMAT_DATE, ordinal = 3)
+    private Date resTime;
 
-    @JSONField(format = JSON_FORMAT_DATE, ordinal = 2)
-    private Date date = new Date();
+    /**
+     * 服务执行的时间
+     */
+    @Getter
+    @Setter
+    private Long costTime;
 
     /**
      * 结果数据

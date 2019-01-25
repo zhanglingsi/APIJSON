@@ -2,6 +2,7 @@ package apijson.demo.server.service.impl;
 
 
 import apijson.demo.server.common.JsonResponse;
+import apijson.demo.server.common.RespCode;
 import apijson.demo.server.mapper.StandardMapper;
 import apijson.demo.server.model.LoginVo;
 import apijson.demo.server.service.StandardService;
@@ -15,6 +16,8 @@ import zuo.biao.apijson.parser.SQLProviderException;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by zhangls on 2019/1/7.
@@ -53,7 +56,12 @@ public class StandardServiceImpl implements StandardService {
 
     @Override
     public JsonResponse loginService(LoginVo vo) {
-        LinkedHashMap<String,Object> ls = mapper.queryUserByName(vo);
-        return new JsonResponse(ls);
+        Map<String, Object> map = mapper.queryUserByName(vo);
+        Optional<Map> optional = Optional.ofNullable(map);
+        if (!optional.isPresent()){
+           return new JsonResponse<String>(RespCode.TOKEN_WITHOUT_USER.getResCode(),RespCode.TOKEN_WITHOUT_USER.getResDesc());
+        }
+
+        return new JsonResponse(map);
     }
 }
