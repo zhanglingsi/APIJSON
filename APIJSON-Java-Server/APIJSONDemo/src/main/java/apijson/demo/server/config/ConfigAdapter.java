@@ -22,7 +22,7 @@ public class ConfigAdapter extends WebMvcConfigurationSupport {
     public void addInterceptors(InterceptorRegistry registry) {
         // 可配置多个拦截器
         registry.addInterceptor(standardInterceptor).addPathPatterns("/**");
-//        registry.addInterceptor(jwtInterceptor).addPathPatterns("/api/**");
+        registry.addInterceptor(jwtInterceptor).addPathPatterns("/api/**");
 
         super.addInterceptors(registry);
     }

@@ -3,6 +3,7 @@ package apijson.demo.server.config;
 import apijson.demo.server.common.JsonResponse;
 import apijson.demo.server.common.RespCode;
 import apijson.demo.server.common.UtilConstants;
+import apijson.demo.server.controller.StandardControllerHelper;
 import apijson.demo.server.utils.JwtUtils;
 import apijson.demo.server.utils.WebUtils;
 import com.alibaba.fastjson.JSONObject;
@@ -34,7 +35,7 @@ public class StandardInterceptor implements HandlerInterceptor {
 
     public static final String CONTENT_TYPE = "content-type";
     public static final String ACCEPT = "Accept";
-    public static final String UTF8 = "UTF-8";
+
 
 
     /**
@@ -67,7 +68,7 @@ public class StandardInterceptor implements HandlerInterceptor {
             jsonObject.put("success", false);
             jsonObject.put("errorCode", RespCode.ERROR_ACCEPT.getResCode());
             jsonObject.put("errorMsg", RespCode.ERROR_ACCEPT.getResDesc());
-            StandardInterceptor.responseJson(res, jsonObject);
+            StandardControllerHelper.responseJson(res, jsonObject);
 
             return false;
         } else if (!MediaType.APPLICATION_JSON_UTF8_VALUE.equalsIgnoreCase(contentType)) {
@@ -76,33 +77,13 @@ public class StandardInterceptor implements HandlerInterceptor {
             jsonObject.put("success", false);
             jsonObject.put("errorCode", RespCode.ERROR_CONTENT_TYPE.getResCode());
             jsonObject.put("errorMsg", RespCode.ERROR_CONTENT_TYPE.getResDesc());
-            StandardInterceptor.responseJson(res, jsonObject);
+            StandardControllerHelper.responseJson(res, jsonObject);
             return false;
         }
         log.debug("【####请求头信息#####################################################################】");
 
 
-        String[] strings = req.getRequestURI().split("/");
 
-        for (int i = 0; i < strings.length; i++) {
-            switch (i) {
-                case 2:
-                    log.info("【进入 getDataJson 方法，请求apiCode为】：{}", strings[2]);
-                    break;
-                case 3:
-                    log.info("【进入 getDataJson 方法，请求apiId为】：{}", strings[3]);
-                    break;
-                case 4:
-                    log.info("【进入 getDataJson 方法，请求token为】：{}", strings[4]);
-                    break;
-                default:
-                    ;
-            }
-        }
-
-        String ip = WebUtils.getClientIpAddr(req);
-
-        log.info("【客户端IP地址：】{}，【浏览器:】{}", ip, req.getHeader("user-agent"));
 
         return true;
     }
@@ -129,27 +110,5 @@ public class StandardInterceptor implements HandlerInterceptor {
         log.info("【请求拦截器处理完毕回调方法】：{}", "afterCompletion");
 
     }
-
-
-    /**
-     * 不符合要求的request，直接返回response
-     * @param res
-     * @param jsonObject
-     */
-    private static void responseJson(HttpServletResponse res, JSONObject jsonObject) {
-        res.setCharacterEncoding(UTF8);
-        res.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        PrintWriter out = null;
-
-        try {
-            out = res.getWriter();
-            out.append(jsonObject.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            out.close();
-        }
-    }
-
 
 }

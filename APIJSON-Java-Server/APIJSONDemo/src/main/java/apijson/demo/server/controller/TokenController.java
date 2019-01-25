@@ -38,7 +38,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("/generateToken")
-    public String generateToken(@RequestBody String reqJson, HttpServletRequest req) {
+    public String generateToken(@RequestBody(required=false) String reqJson, HttpServletRequest req) {
         Long startTime = System.currentTimeMillis();
         JsonResponse<JSONObject> jsonRequest = StandardControllerHelper.checkJsonFormat(reqJson);
         if (!jsonRequest.getSuccess()) {

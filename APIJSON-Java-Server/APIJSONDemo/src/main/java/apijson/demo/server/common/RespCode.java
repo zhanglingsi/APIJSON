@@ -1,6 +1,5 @@
 package apijson.demo.server.common;
 
-import apijson.demo.server.config.StandardInterceptor;
 import com.google.common.base.Objects;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +29,11 @@ public enum RespCode {
     TOKEN_USERNAME_NULL("000200", "生成token时，参数userName不能为空"),
     TOKEN_PASSWORD_NULL("000201", "生成token时，参数password不能为空"),
     TOKEN_IP_NULL("000202", "生成token时，参数ip不能为空"),
-    TOKEN_WITHOUT_USER("000203", "用户或密码有误，请重新输入");
+    TOKEN_WITHOUT_USER("000203", "用户或密码有误，请重新输入"),
+    TOKEN_GET_ERROR("000204", "请求头中Authorization获取JWT-TOKEN为空或者不符合要求"),
+    TOKEN_OUT_TIME_ERROR("000205", "获取JWT-TOKEN已超时，不符合要求"),
+    TOKEN_PARSE_ERROR("000206", "获取JWT-TOKEN解析错误，已被篡改，不符合要求"),
+    TOKEN_ERROR("000207", "获取JWT-TOKEN未知错误，不符合要求");
     /*************************************************************************************************************/
 
     @Getter

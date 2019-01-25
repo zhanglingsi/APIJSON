@@ -3,12 +3,14 @@ package apijson.demo.server.controller;
 
 import apijson.demo.server.common.JsonRequest;
 import apijson.demo.server.common.JsonResponse;
+import apijson.demo.server.common.UtilConstants;
 import apijson.demo.server.model.LoginVo;
 import apijson.demo.server.service.StandardService;
 import apijson.demo.server.utils.JwtUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -111,40 +113,30 @@ public class StandardController {
      * "filterType":"like;eq",//支持的查询运算符 该字段可like和eq
      * "dicTable":"",//字段字典：{'原始值':'字典映射值'}
      * "shareKind":"",//共享类型（1：无条件共享，2：有条件共享）
+     * "isFixed":true//是否为必选条件（true是，false否）
      * }
      * ]
      */
-    @PostMapping("/{apiName}/{apiId}/{token}/getDataJson")
-    public String getDataJson(@RequestBody String queryStr,
+    @PostMapping("/{apiName}/{apiId}/{method}/json")
+    public String getJson(@RequestBody(required=false) String queryStr,
                                     @PathVariable String apiName,
                                     @PathVariable String apiId,
-                                    @PathVariable String token,
+                                    @PathVariable String method,
                                     final HttpServletRequest request) {
-        log.info("【进入 getDataJson 方法，请求apiCode为】：{}", apiName);
-        log.info("【进入 getDataJson 方法，请求apiId为】：{}", apiId);
-        log.info("【进入 getDataJson 方法，请求token为】：{}", token);
-        log.info("【进入 getDataJson 方法，请求JSON串为】：{}", queryStr);
+        log.info("【请求服务名为：】{}", apiName);
+        log.info("【请求服务版本为：】{}", apiId);
+        log.info("【请求服务的方法为：】{}", method);
 
 
-//        // 获取JWT中的用户信息
-//        Claims claims = (Claims) request.getAttribute(UtilConstants.Jwt.JWT_USER_INFO);
-//        log.info("【获取JWT中的用户信息为】：{}", claims);
-//
-//        // 1. 访问权限
-//        JSONObject jsonValidate = ControllerUtils.standardValidator(GET, queryStr);
-//        log.info("【验证后的，返回的JSON串为】：{}", jsonValidate);
-//
-//        // 验证通过
-//        if (jsonValidate.containsKey(JsonApiResponse.KEY_CODE) && jsonValidate.get(JsonApiResponse.KEY_CODE).equals(JsonApiResponse.CODE_SUCCESS)) {
-//            // 有可能返回业务异常信息
-//            return service.queryService(jsonValidate);
-//        } else {
-//            jsonValidate.put("request", queryStr);
-//
-//            return jsonValidate;
-//        }
+        // 获取JWT中的用户信息
+        Claims claims = (Claims) request.getAttribute(UtilConstants.Jwt.JWT_USER_INFO);
+        log.info("【获取JWT中的用户信息为】：{}", claims);
 
-//        return jsonValidate;
+        // 1. 根据服务名、服务版本号，查询服务网关表
+        // 2. 根据method，和ID，查询该用户是否有权限调用该服务。
+        // 3. 调用服务。并返回。
+
+
         return null;
     }
 }

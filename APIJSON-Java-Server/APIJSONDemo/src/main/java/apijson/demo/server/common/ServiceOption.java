@@ -32,5 +32,34 @@ public class ServiceOption implements Serializable {
     @Setter
     private Boolean hasFile;
 
+    /**
+     * 数据总数
+     */
+    @Getter
+    @Setter
+    private Integer totalRecords;
+
+    /**
+     * 是否分页 true:有分页 false:无分页
+     */
+    @Getter
+    @Setter
+    private Boolean isPageable;
+
+    /**
+     * 分页页号
+     */
+    @Getter
+    @Setter
+    private Integer pageNo;
+
+    /**
+     * 单页数量
+     */
+    @Getter
+    @Setter
+    private Integer pageSize;
+
+
 
 }

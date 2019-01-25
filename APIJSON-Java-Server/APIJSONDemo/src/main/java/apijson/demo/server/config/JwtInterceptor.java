@@ -1,7 +1,11 @@
 package apijson.demo.server.config;
 
+import apijson.demo.server.common.RespCode;
 import apijson.demo.server.common.UtilConstants;
+import apijson.demo.server.controller.StandardControllerHelper;
 import apijson.demo.server.utils.JwtUtils;
+import apijson.demo.server.utils.WebUtils;
+import com.alibaba.fastjson.JSONObject;
 import com.zhangls.apijson.utils.StringUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -32,11 +36,24 @@ public class JwtInterceptor implements HandlerInterceptor {
         log.info("【JwtInterceptor请求拦截器预处理方法】：{}", "preHandle");
         log.info("【JwtInterceptor请求拦截器request方法】：{}", req.getMethod());
 
+        String[] strings = req.getRequestURI().split("/");
+        log.info("【进入 getDataJson 方法，请求apiCode为】：{}", strings[2]);
+        log.info("【进入 getDataJson 方法，请求apiId为】：{}", strings[3]);
+        log.info("【客户端IP地址：】{}，【浏览器:】{}", WebUtils.getClientIpAddr(req), req.getHeader("user-agent"));
+
         String authHeader = req.getHeader(UtilConstants.Jwt.JWT_AUTHOR);
 
         if (StringUtil.isEmpty(authHeader, Boolean.TRUE) || !authHeader.startsWith(UtilConstants.Jwt.JWT_BEARER)) {
             log.info("【JWT-TOKEN 获取Request Header信息 Error】：{}", authHeader);
-            throw new ServletException("Missing or invalid Authorization header.");
+
+            JSONObject jsonObject = new JSONObject(true);
+
+            jsonObject.put("success", false);
+            jsonObject.put("errorCode", RespCode.TOKEN_GET_ERROR.getResCode());
+            jsonObject.put("errorMsg", RespCode.TOKEN_GET_ERROR.getResDesc());
+            StandardControllerHelper.responseJson(res, jsonObject);
+
+            return false;
         }
 
         String token = authHeader.substring(UtilConstants.Jwt.JWT_BEARER.length());
@@ -46,13 +63,31 @@ public class JwtInterceptor implements HandlerInterceptor {
             req.setAttribute(UtilConstants.Jwt.JWT_USER_INFO, claims);
         } catch (ExpiredJwtException e) {
             log.info("【过期的JWT-TOKEN】：{}", token);
-            throw new ServletException("token expired.");
+            JSONObject jsonObject = new JSONObject(true);
+
+            jsonObject.put("success", false);
+            jsonObject.put("errorCode", RespCode.TOKEN_OUT_TIME_ERROR.getResCode());
+            jsonObject.put("errorMsg", RespCode.TOKEN_OUT_TIME_ERROR.getResDesc());
+            StandardControllerHelper.responseJson(res, jsonObject);
+            return false;
         } catch (SignatureException e) {
             log.info("【错误的JWT-TOKEN】：{}", token);
-            throw new ServletException("Invalid token.");
+            JSONObject jsonObject = new JSONObject(true);
+
+            jsonObject.put("success", false);
+            jsonObject.put("errorCode", RespCode.TOKEN_PARSE_ERROR.getResCode());
+            jsonObject.put("errorMsg", RespCode.TOKEN_PARSE_ERROR.getResDesc());
+            StandardControllerHelper.responseJson(res, jsonObject);
+            return false;
         } catch (Exception e) {
             log.info("【获取JWT-TOKEN Error】：{}", token);
-            throw new ServletException("Error token.");
+            JSONObject jsonObject = new JSONObject(true);
+
+            jsonObject.put("success", false);
+            jsonObject.put("errorCode", RespCode.TOKEN_ERROR.getResCode());
+            jsonObject.put("errorMsg", RespCode.TOKEN_ERROR.getResDesc());
+            StandardControllerHelper.responseJson(res, jsonObject);
+            return false;
         }
 
         return true;
